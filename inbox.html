@@ -707,6 +707,7 @@ a.ev:hover { text-decoration: underline; }
       evidence: "根拠",
       newTab: "（新しいタブで開きます）",
       othersNote: "{owner}の判断待ちです。代わりに答えることもできます。",
+      escalated: "{name} は自分で決めるつもりでしたが、{stakes}の印があるので人の判断が要ります。返事がない限り進めません。",
       readOnly: "閲覧のみの権限のため、ここからは回答できません。",
       writeFail: "{title}を送れませんでした。通信を確かめて、もう一度選んでください。",
       quota: "保存先がいっぱいで{title}を送れませんでした。完了した項目を消してから、もう一度選んでください。",
@@ -826,6 +827,7 @@ a.ev:hover { text-decoration: underline; }
       evidence: "Evidence",
       newTab: " (opens in a new tab)",
       othersNote: "Waiting on {owner}. You can answer for them.",
+      escalated: "{name} meant to decide this itself, but it is marked {stakes}, so a person has to decide. Nothing happens without an answer.",
       readOnly: "You can view this inbox but not answer.",
       writeFail: "Could not send {title}. Check your connection and pick again.",
       quota: "The store is full, so {title} was not sent. Delete finished items, then pick again.",
@@ -1008,6 +1010,9 @@ a.ev:hover { text-decoration: underline; }
     it.stakes = STAKES.filter((s) => stakes.includes(s));
     it.otherStakes = stakes.filter((s) => !STAKES.includes(s)).map((s) => (typeof s === "string" ? s.trim() : JSON.stringify(s))).filter(Boolean).slice(0, 3);
     it.marked = it.stakes.length + it.otherStakes.length > 0;
+    // An agent may decide alone only when nothing is at stake; a marked item goes to the inbox owner.
+    it.escalated = it.selfOwned && it.marked;
+    if (it.escalated) it.selfOwned = false;
     it.blocking = raw.blocking !== false;
     it.evidence = (Array.isArray(raw.evidence) ? raw.evidence : []).filter((l) => l && str(l.label)).slice(0, 5)
       .map((l) => ({ label: str(l.label), url: str(l.url) }));
@@ -1026,10 +1031,12 @@ a.ev:hover { text-decoration: underline; }
     for (const o of cfg && Array.isArray(cfg.owners) ? cfg.owners : []) {
       if (o && str(o.key)) map.set(str(o.key), str(o.label) || str(o.key));
     }
-    for (const it of src().items.values()) if (it.owner && !it.selfOwned && !map.has(it.owner)) map.set(it.owner, it.owner);
+    for (const it of src().items.values()) if (it.owner && !it.selfOwned && !it.escalated && !map.has(it.owner)) map.set(it.owner, it.owner);
     return map;
   }
   const ownerLabel = (k) => (k ? ownerMap().get(k) || k : t("ownerNone"));
+  // Escalated items belong to the inbox owner (config/inbox self), the same fallback as "I don't know".
+  const effOwner = (it) => (it.escalated ? str(src().config && src().config.self) || it.owner : it.owner);
 
   // "Yours" comes from config/inbox only for the artifact's owner (and in demo); everyone else picks once.
   function selfKey() {
@@ -1069,7 +1076,8 @@ a.ev:hover { text-decoration: underline; }
         continue;
       }
       if (S.pinned.has(it.id) || (v.ans && !v.pend && !S.recent.has(it.id))) { out.closed.push(v); continue; }
-      const mine = !!self && !it.selfOwned && it.owner === self;
+      const owner = effOwner(it);
+      const mine = !!self && !it.selfOwned && owner === self;
       (mine ? out.mine : out.others).push(v);
       if (v.open) { if (mine) { out.mineOpen++; if (v.urgent) out.urgentOpen++; } else out.othersOpen++; }
     }
@@ -1158,8 +1166,9 @@ a.ev:hover { text-decoration: underline; }
     if (it.why) el.append(h("p", { class: "why", text: it.why }));
     if (reopened) el.append(h("p", { class: "notice is-subtle", text: t("current", { what: answerWhat(v.ans, it) }) }));
     else if (v.prev) el.append(h("p", { class: "notice", text: t("changed", { what: answerWhat(v.prev, it) }) }));
-    if (inRow) el.append(h("p", { class: "notice is-subtle", text: t("othersNote", { owner: ownerLabel(it.owner) }) }));
-    if (it.selfOwned && it.recommend) el.append(autoLine(it));
+    if (inRow) el.append(h("p", { class: "notice is-subtle", text: t("othersNote", { owner: ownerLabel(effOwner(it)) }) }));
+    if (it.escalated) el.append(h("p", { class: "notice", text: t("escalated", { name: it.asker, stakes: stakeNames(it).map(quote).join(lang === "ja" ? "" : t("listSep")) }) }));
+    else if (it.selfOwned && it.recommend) el.append(autoLine(it));
     el.append(optionsBlock(it));
     el.append(actions(it, reopened));
     if (S.panel && S.panel.id === it.id && (S.panel.type === "reply" || S.panel.type === "reassign")) el.append(S.panel.type === "reply" ? replyPanel(it) : reassignPanel(it));
@@ -1268,7 +1277,7 @@ a.ev:hover { text-decoration: underline; }
 
   function reassignPanel(it) {
     const id = it.id;
-    const choices = [...ownerMap()].filter(([k]) => k !== it.owner).map(([k, label]) => ({ k, label }));
+    const choices = [...ownerMap()].filter(([k]) => k !== effOwner(it)).map(([k, label]) => ({ k, label }));
     choices.push({ k: "", label: t("unknownOwner") });
     const chosen = S.to.has(id) ? S.to.get(id) : null;
     const note = h("input", { class: "field", type: "text", id: "rnote-" + id, maxlength: "300", placeholder: t("reassignNote"),
@@ -1526,7 +1535,7 @@ a.ev:hover { text-decoration: underline; }
         const order = [...ownerMap().keys()];
         const groups = new Map();
         for (const v of d.others) {
-          const key = v.it.selfOwned ? "\u0000agent" : v.it.owner || "\u0000none";
+          const key = v.it.selfOwned ? "\u0000agent" : effOwner(v.it) || "\u0000none";
           if (!groups.has(key)) groups.set(key, []);
           groups.get(key).push(v);
         }

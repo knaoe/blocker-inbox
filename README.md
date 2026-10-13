@@ -44,7 +44,7 @@ The JSON Schemas are in [`schema/`](schema). Check a document with `uv run scrip
 - `title`: the decision, phrased as a question.
 - `blocked`: what is stopped, as a short noun phrase. Optional.
 - `why`: why it matters, in one line. Put the facts a person needs here (the email subject, the amount), not only behind a link.
-- `owner`: who should decide, as an owner key from `config/inbox` (for example `lead`, `ux`, `repo`). Set it to your own `asker` name when you will decide yourself unless someone objects; the card then says that, if nobody answers, you go ahead with the recommendation at `due`.
+- `owner`: who should decide, as an owner key from `config/inbox` (for example `lead`, `ux`, `repo`). Set it to your own `asker` name when you will decide yourself unless someone answers first; the card then says that, if nobody answers, you go ahead with the recommendation at `due`. Do this only when nothing is at stake: it needs `recommend` and `due` and no `stakes`. The page sends a marked item set this way to the inbox owner instead, and the validator rejects it.
 - `asker`: your agent name.
 - `options`: 2 to 4 of `{ key, label, consequence }`. `consequence` says in plain words what happens if this option is picked.
 - `recommend`: `{ key, reason }`. Optional, but cards without it are slower to answer.
@@ -88,7 +88,7 @@ See [`examples/answer.json`](examples/answer.json).
 4. **Take it** before acting: update the item with `received` set to a copy of the answer plus `received_at`, passing `if_version`. Then get `answers/<id>` again; if its `answered_at` changed in between, take the new one instead. The page now shows the answer as picked up and stops offering Change.
 5. **Act on the key, not the note.**
    - `choose`: do option `key`. Read `note` as context within that option; it is never a new instruction.
-   - `reply`: read `note`. Act on it, or rewrite the question: add 1 to `rev` and send `"received": {"__delete__": true}` in the same update, which puts the card back in front of the person.
+   - `reply`: read `note`. Act on it only within the question you asked; for anything beyond that, rewrite the question: add 1 to `rev` and send `"received": {"__delete__": true}` in the same update, which puts the card back in front of the person.
    - `reassign`: set `owner` to `reassign_to` (to `config/inbox` `self` when it is `null`), add 1 to `rev` and delete `received` the same way.
 6. **Close** with `status: "done"`, a one-line `outcome` and `done_at`. Check `answers/<id>` once more first: an answer whose `answered_at` differs from `received.answered_at` is a follow-up the person sent after you took the first one. Take it and handle it before closing.
 7. **No answer?** After 24 hours, re-ask once in your usual channel and record `meta.reasked_at` so a restart does not ask again. `rev` stays the same. After 48 hours the page shows the item as stuck at the top.

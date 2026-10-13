@@ -29,7 +29,7 @@
     "rev": {
       "type": "integer",
       "minimum": 1,
-      "description": "Start at 1. Add 1 whenever the question changes (title, options, recommend, owner). A plain re-ask does not change it. An answer only applies to the rev it was given for; when you add 1, also remove received."
+      "description": "Start at 1. Add 1 whenever you change anything a person reads (title, blocked, why, options, recommend, stakes, owner, due, evidence), and remove received in the same write. Taking an answer (received), closing (status, outcome, done_at) and meta do not change rev. An answer only applies to the rev it was given for."
     },
     "status": {
       "enum": [
@@ -131,11 +131,13 @@
     "due": {
       "type": "string",
       "format": "date-time",
-      "description": "When the answer stops being useful (or, for an item you own yourself, when you will go ahead with the recommendation)."
+      "description": "When the answer stops being useful. After it passes, the page marks the item overdue and moves it to the top. For an item you own yourself (owner = asker), the time you will go ahead with the recommendation."
     },
     "received": {
       "type": "object",
       "required": [
+        "kind",
+        "item_rev",
         "answered_at",
         "received_at"
       ],
@@ -146,6 +148,10 @@
             "reply",
             "reassign"
           ]
+        },
+        "item_rev": {
+          "type": "integer",
+          "minimum": 1
         },
         "key": {
           "type": "string"
@@ -163,17 +169,23 @@
           "type": "string",
           "format": "date-time"
         },
+        "answered_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "received_at": {
           "type": "string",
           "format": "date-time"
         }
       },
-      "description": "Before acting on an answer, copy it here and add received_at (write with if_version). The page then shows the answer as picked up instead of waiting, stops offering to change it, and treats any newer answer as a follow-up. Remove it when you add 1 to rev."
+      "description": "Before acting on an answer, copy it here and add received_at (an update with if_version). The page then shows the answer as picked up, stops offering to change it, and treats any answer with a different answered_at as a follow-up. Remove it (ArtifactData: \"received\": {\"__delete__\": true}) whenever you add 1 to rev."
     },
     "outcome": {
       "type": "string",
       "maxLength": 200,
-      "description": "Set with status done: what the asker did, in one line."
+      "description": "Set with status done: what you did, in one line (\"Withdrawn: no longer needed\" when you withdraw the question)."
     },
     "done_at": {
       "type": "string",
@@ -182,7 +194,7 @@
     },
     "meta": {
       "type": "object",
-      "description": "Free-form data for the asker's own use (thread ids, run ids). The page ignores it."
+      "description": "Free-form data for your own use (thread ids, run ids, reasked_at). The page ignores it."
     }
   },
   "$defs": {
@@ -245,5 +257,24 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "done"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "done_at"
+        ]
+      }
+    }
+  ]
 }

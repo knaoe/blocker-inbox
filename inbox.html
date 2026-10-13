@@ -13,7 +13,7 @@
   --ink: #121722;
   --muted: #525C6F;
   --line: #D5DBE5;
-  --line-strong: #8792A5;
+  --line-strong: #7A8394;
   --accent: #2346C8;
   --on-accent: #FFFFFF;
   --on-accent-muted: #DCE3FF;
@@ -66,6 +66,7 @@
   color-scheme: dark;
 }
 
+html { scroll-padding-top: calc(72px + env(safe-area-inset-top, 0px)); scroll-padding-bottom: 24px; }
 body {
   background: var(--bg);
   color: var(--ink);
@@ -80,6 +81,7 @@ button, input, textarea, select { font-family: inherit; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .ic { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* Tally bar */
 .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
@@ -102,6 +104,7 @@ button, input, textarea, select { font-family: inherit; }
 
 .sec-h { display: flex; align-items: baseline; gap: 8px; margin: 14px 0 0; font-size: var(--fs-m); font-weight: 700; line-height: 1.4; }
 .sec-h:focus { outline: none; }
+.sec-h:focus-visible, .panel-l:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
 .sec-h .n { font-family: var(--font-mono); font-size: var(--fs-s); color: var(--muted); font-variant-numeric: tabular-nums; }
 .group-h { margin: 6px 0 -4px; display: flex; align-items: baseline; gap: 6px; font-size: var(--fs-s); font-weight: 700; color: var(--muted); line-height: 1.4; }
 .group-h .n { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
@@ -157,7 +160,11 @@ button, input, textarea, select { font-family: inherit; }
 .opt.is-rec.is-soft .rsn b { color: var(--ink); }
 .opt.is-rec.is-soft .tag { background: var(--accent); color: var(--on-accent); }
 .opt.is-picked { outline: 3px solid var(--alert); outline-offset: 2px; }
-.opt:disabled { cursor: default; opacity: 0.55; }
+.opt:disabled { cursor: default; border-style: dashed; }
+.opt.is-rec:disabled { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
+.opt.is-rec:disabled .cons, .opt.is-rec:disabled .rsn { color: var(--muted); }
+.opt.is-rec:disabled .rsn b { color: var(--ink); }
+.opt.is-rec:disabled .tag { background: var(--accent); color: var(--on-accent); }
 
 .confirm { display: grid; gap: 10px; padding: 14px; border-radius: var(--r-ctl); background: var(--alert-soft); border: 1.5px solid var(--alert-line); }
 .confirm p { margin: 0; font-size: var(--fs-s); line-height: 1.6; }
@@ -174,10 +181,11 @@ button, input, textarea, select { font-family: inherit; }
 .panel-l:focus { outline: none; }
 .field { width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 8px; border: 1.5px solid var(--line-strong); background: var(--surface); color: var(--ink); font-size: 16px; line-height: 1.5; }
 textarea.field { resize: vertical; min-height: 84px; }
+.field::placeholder { color: var(--muted); opacity: 1; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { all: unset; box-sizing: border-box; cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--surface); color: var(--ink); font-size: var(--fs-s); font-weight: 700; line-height: 1.3; }
 .chip:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-.chip[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
 .chip .k { font-family: var(--font-mono); }
 .row-btns { display: flex; flex-wrap: wrap; gap: 8px; }
 .btn { all: unset; box-sizing: border-box; cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 10px 18px; border-radius: var(--r-ctl); border: 1.5px solid var(--line-strong); background: var(--surface); color: var(--ink); font-size: var(--fs-s); font-weight: 700; line-height: 1.3; text-align: center; }
@@ -254,8 +262,10 @@ a.ev:hover { text-decoration: underline; }
 .skel i { display: block; height: 12px; border-radius: 6px; background: var(--chip); }
 .skel i:nth-child(1) { width: 40%; } .skel i:nth-child(2) { width: 85%; height: 16px; } .skel i:nth-child(3) { width: 65%; }
 
-/* Toast (errors and status only; undo lives on the receipt) */
-.toast { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 10; max-width: 560px; margin-inline: auto; padding: 12px 16px; border-radius: 12px; background: var(--ink); color: var(--surface); box-shadow: var(--shadow); font-size: var(--fs-s); font-weight: 700; line-height: 1.5; overflow-wrap: anywhere; }
+/* Alert for failures: stays until closed. Undo lives on the receipt, not here. */
+.toast { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 10; max-width: 560px; margin-inline: auto; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 16px; border-radius: 12px; background: var(--ink); color: var(--surface); box-shadow: var(--shadow); }
+.toast-msg { flex: 1; min-width: 0; font-size: var(--fs-s); font-weight: 700; line-height: 1.5; overflow-wrap: anywhere; }
+.toast .btn { background: transparent; border-color: var(--muted); color: var(--surface); }
 
 @media (prefers-reduced-motion: no-preference) {
   .chev { transition: transform 0.15s ease; }
@@ -288,7 +298,8 @@ a.ev:hover { text-decoration: underline; }
   </div>
 </header>
 <main class="wrap" id="app"></main>
-<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="sr" id="live" role="status" aria-live="polite"></div>
+<div class="toast" id="toast" role="alert" hidden><span class="toast-msg" id="toast-msg"></span><button type="button" class="btn" id="toast-close"></button></div>
 
 <script type="application/json" id="demo-data">
 {
@@ -676,9 +687,13 @@ a.ev:hover { text-decoration: underline; }
       sendIn: "{n}秒後に送ります",
       sendingNow: "送っています…",
       undo: "取り消す",
+      undone: "取り消しました。まだ送っていません。",
+      sentenceSep: "。",
+      paren: "（{v}）",
       notPicked: "エージェントの受け取り待ち · {d}",
       notPickedStale: "{d}受け取られていません。エージェントが止まっているかもしれません",
       picked: "エージェントが受け取り、対応中です",
+      pickedStale: "受け取られてから{d}たっています。エージェントが止まっているかもしれません",
       followUp: "追加の連絡は受け取り待ちです",
       doneLine: "完了: {outcome}",
       doneBare: "完了",
@@ -690,10 +705,11 @@ a.ev:hover { text-decoration: underline; }
       dueIn: "期限まで{d}",
       duePast: "期限を{d}過ぎた",
       evidence: "根拠",
+      newTab: "（新しいタブで開きます）",
       othersNote: "{owner}の判断待ちです。代わりに答えることもできます。",
       readOnly: "閲覧のみの権限のため、ここからは回答できません。",
-      writeFail: "送れませんでした。通信を確かめて、もう一度選んでください。",
-      quota: "保存先がいっぱいです。完了した項目を消してから、もう一度選んでください。",
+      writeFail: "{title}を送れませんでした。通信を確かめて、もう一度選んでください。",
+      quota: "保存先がいっぱいで{title}を送れませんでした。完了した項目を消してから、もう一度選んでください。",
       revoked: "この受付箱を表示する権限がなくなりました。",
       loadFail: "読み込めませんでした。ページを開き直してください。",
       offline: "受付箱に接続できません。サインインしているか、共有の権限があるかを確かめてください。",
@@ -790,9 +806,13 @@ a.ev:hover { text-decoration: underline; }
       sendIn: "Sends in {n}s",
       sendingNow: "Sending…",
       undo: "Undo",
+      undone: "Undone. Nothing was sent.",
+      sentenceSep: ". ",
+      paren: " ({v})",
       notPicked: "Not picked up by the agent yet · {d}",
       notPickedStale: "Not picked up for {d}. The agent may have stopped",
       picked: "Picked up. The agent is on it",
+      pickedStale: "Picked up {d} ago and still open. The agent may have stopped",
       followUp: "Your follow-up has not been picked up yet",
       doneLine: "Done: {outcome}",
       doneBare: "Done",
@@ -804,10 +824,11 @@ a.ev:hover { text-decoration: underline; }
       dueIn: "due in {d}",
       duePast: "{d} overdue",
       evidence: "Evidence",
+      newTab: " (opens in a new tab)",
       othersNote: "Waiting on {owner}. You can answer for them.",
       readOnly: "You can view this inbox but not answer.",
-      writeFail: "Could not send. Check your connection and pick again.",
-      quota: "The store is full. Delete finished items, then pick again.",
+      writeFail: "Could not send {title}. Check your connection and pick again.",
+      quota: "The store is full, so {title} was not sent. Delete finished items, then pick again.",
       revoked: "You no longer have access to this inbox.",
       loadFail: "Could not load. Open the page again.",
       offline: "Can’t reach this inbox. Check that you are signed in and have access.",
@@ -980,8 +1001,8 @@ a.ev:hover { text-decoration: underline; }
       .filter((o) => o && str(o.key) && str(o.label))
       .slice(0, 4)
       .map((o) => ({ key: str(o.key), label: str(o.label), consequence: str(o.consequence) }));
-    const rec = raw.recommend && it.options.find((o) => o.key === str(raw.recommend.key));
-    it.recommend = rec ? { key: rec.key, label: rec.label, reason: str(raw.recommend.reason) } : null;
+    const recOpt = raw.recommend && it.options.find((o) => o.key === str(raw.recommend.key));
+    it.recommend = recOpt ? { key: recOpt.key, label: recOpt.label, reason: str(raw.recommend.reason) } : null;
     // Fail closed: a stakes value the page does not know still counts as stakes.
     const stakes = Array.isArray(raw.stakes) ? raw.stakes : raw.stakes ? [raw.stakes] : [];
     it.stakes = STAKES.filter((s) => stakes.includes(s));
@@ -994,7 +1015,8 @@ a.ev:hover { text-decoration: underline; }
     it.dueMs = ms(raw.due);
     it.doneMs = ms(raw.done_at);
     it.outcome = str(raw.outcome);
-    it.received = raw.received && typeof raw.received === "object" && ms(raw.received.answered_at) != null ? raw.received : null;
+    const rec = raw.received;
+    it.received = rec && typeof rec === "object" && ms(rec.answered_at) != null && (rec.item_rev == null || Number(rec.item_rev) === it.rev) ? rec : null;
     return it;
   }
 
@@ -1042,7 +1064,8 @@ a.ev:hover { text-decoration: underline; }
       const v = { it, ans: applies ? ans : null, prev: ans && !applies ? ans : null, pend: S.pending.get(it.id) || null, ...tierOf(it, now) };
       v.open = !v.pend && !v.ans && it.status === "open";
       if (it.status === "done") {
-        if (it.doneMs == null || now - it.doneMs <= SETTINGS.doneDays * 24 * HOUR) out.closed.push(v);
+        const doneAt = it.doneMs ?? ms(it.received && it.received.received_at) ?? it.askedMs ?? now;
+        if (now - doneAt <= SETTINGS.doneDays * 24 * HOUR) out.closed.push(v);
         continue;
       }
       if (S.pinned.has(it.id) || (v.ans && !v.pend && !S.recent.has(it.id))) { out.closed.push(v); continue; }
@@ -1131,7 +1154,7 @@ a.ev:hover { text-decoration: underline; }
     const el = h("article", { class: "card" + (v.urgent && !inRow && !reopened ? " is-urgent" : ""), id: "card-" + it.id, "aria-labelledby": "t-" + it.id });
     el.append(h("div", { class: "card-top" }, pill(v), stakeChips(it)));
     el.append(h("h3", { class: "card-title", id: "t-" + it.id, tabindex: "-1", text: it.title }));
-    if (it.blocked) el.append(h("p", { class: "blocked" }, h("span", { class: "blocked-k", text: t(it.blocking ? "blockedLabel" : "waitingLabel") }), it.blocked));
+    if (it.blocked) el.append(h("p", { class: "blocked" }, h("span", { class: "blocked-k", text: t(it.blocking ? "blockedLabel" : "waitingLabel") }), " ", it.blocked));
     if (it.why) el.append(h("p", { class: "why", text: it.why }));
     if (reopened) el.append(h("p", { class: "notice is-subtle", text: t("current", { what: answerWhat(v.ans, it) }) }));
     else if (v.prev) el.append(h("p", { class: "notice", text: t("changed", { what: answerWhat(v.prev, it) }) }));
@@ -1170,7 +1193,7 @@ a.ev:hover { text-decoration: underline; }
         h("span", { class: "lbl", text: o.label }),
         isRec ? h("span", { class: "tag", text: t("recommend") }) : null,
         o.consequence ? h("span", { class: "cons", text: o.consequence }) : null,
-        isRec && rec.reason ? h("span", { class: "rsn" }, h("b", { text: t("reason") }), rec.reason) : null));
+        isRec && rec.reason ? h("span", { class: "rsn" }, h("b", { text: t("reason") }), " ", rec.reason) : null));
     }
     if (picked) box.append(confirmRow(it, picked));
     return box;
@@ -1205,7 +1228,10 @@ a.ev:hover { text-decoration: underline; }
     S.panel = same ? null : { id: it.id, type };
     S.confirm = null;
     render();
-    if (!same) focus(type === "reassign" ? "rq-" + it.id : "note-" + it.id);
+    if (!same) {
+      const first = type === "reassign" ? document.querySelector("#card-" + CSS.escape(it.id) + " .chips .chip") : null;
+      if (first) first.focus({ preventScroll: true }); else focus("note-" + it.id);
+    }
   }
 
   function noteBox(id, placeholder) {
@@ -1226,11 +1252,11 @@ a.ev:hover { text-decoration: underline; }
     } }, t("send"));
     ta.onsync = () => { send.disabled = !(ta.value.trim() || S.pick.get(id)); };
     ta.onsync();
-    const chips = it.options.length ? h("div", { class: "chips", role: "radiogroup", "aria-labelledby": "pl-" + id },
-      it.options.map((o) => h("button", { type: "button", class: "chip", role: "radio", id: "pick-" + id + "-" + o.key,
-        "aria-checked": String(S.pick.get(id) === o.key),
+    const chips = it.options.length ? h("div", { class: "chips", role: "group", "aria-labelledby": "pl-" + id },
+      it.options.map((o) => h("button", { type: "button", class: "chip", id: "pick-" + id + "-" + o.key,
+        "aria-pressed": String(S.pick.get(id) === o.key),
         onclick: () => { if (S.pick.get(id) === o.key) S.pick.delete(id); else S.pick.set(id, o.key); render(); } },
-        h("span", { class: "k", text: o.key }), o.label))) : null;
+        S.pick.get(id) === o.key ? icon("check") : null, h("span", { class: "k", text: o.key }), " ", o.label))) : null;
     return h("div", { class: "panel" },
       h("label", { class: "panel-l", for: "note-" + id, text: t("noteLabel") }),
       ta,
@@ -1250,9 +1276,9 @@ a.ev:hover { text-decoration: underline; }
     note.value = S.rdrafts.get(id) || "";
     return h("div", { class: "panel" },
       h("p", { class: "panel-l", id: "rq-" + id, tabindex: "-1", text: t("reassignQ") }),
-      h("div", { class: "chips", role: "radiogroup", "aria-labelledby": "rq-" + id },
-        choices.map((c) => h("button", { type: "button", class: "chip", role: "radio", id: "to-" + id + "-" + (c.k || "unknown"),
-          "aria-checked": String(chosen === c.k), onclick: () => { S.to.set(id, c.k); render(); } }, c.label))),
+      h("div", { class: "chips", role: "group", "aria-labelledby": "rq-" + id },
+        choices.map((c) => h("button", { type: "button", class: "chip", id: "to-" + id + "-" + (c.k || "unknown"),
+          "aria-pressed": String(chosen === c.k), onclick: () => { S.to.set(id, c.k); render(); } }, chosen === c.k ? icon("check") : null, c.label))),
       note,
       h("p", { class: "rc-n", text: t("reassignHint") }),
       h("div", { class: "row-btns" },
@@ -1266,10 +1292,10 @@ a.ev:hover { text-decoration: underline; }
     const parts = [];
     if (it.asker) parts.push(h("span", { class: "asker", text: t("asker", { name: it.asker }) }));
     if (it.project) parts.push(h("span", { text: it.project }));
-    if (it.dueMs != null) parts.push(h("span", { class: "due" + (v.overdue ? " is-over" : ""), title: at(it.dueMs) }, rel("due", it.dueMs)));
+    if (it.dueMs != null) parts.push(h("span", { class: "due" + (v.overdue ? " is-over" : "") }, rel("due", it.dueMs), t("paren", { v: at(it.dueMs) })));
     const evs = it.evidence.length ? h("div", { class: "evs" }, h("span", { class: "evs-k", text: t("evidence") }),
       it.evidence.map((l) => isWebLink(l.url)
-        ? h("a", { class: "ev", href: l.url, target: "_blank", rel: "noopener noreferrer" }, l.label, icon("link"))
+        ? h("a", { class: "ev", href: l.url, target: "_blank", rel: "noopener noreferrer" }, l.label, icon("link"), h("span", { class: "sr", text: t("newTab") }))
         : h("span", { class: "ev", text: l.label }))) : null;
     return h("div", { class: "meta" }, parts.length ? h("p", { class: "meta-line" }, parts) : null, evs);
   }
@@ -1306,9 +1332,9 @@ a.ev:hover { text-decoration: underline; }
     return cached("snd:" + it.id, sig, () => h("div", { class: "receipt is-sending", id: "rc-" + it.id },
       h("div", { class: "rc-main" },
         h("span", { class: "rc-t", text: it.title }),
-        h("span", { class: "rc-a", role: "status" }, icon("send"), answerLine(p.answer, it, "sending")),
+        h("span", { class: "rc-a", id: "rca-" + it.id }, icon("send"), answerLine(p.answer, it, "sending")),
         h("span", { class: "rc-s", "data-until": writing ? null : p.until, text: writing ? t("sendingNow") : t("sendIn", { n: secondsLeft(p.until) }) })),
-      writing ? null : h("button", { type: "button", class: "btn is-primary", id: "rowbtn-" + it.id, onclick: () => takeBack(it.id) }, t("undo")),
+      writing ? null : h("button", { type: "button", class: "btn is-primary", id: "rowbtn-" + it.id, "aria-describedby": "rca-" + it.id, onclick: () => takeBack(it.id) }, t("undo")),
       writing ? null : h("i", { class: "rc-bar", style: "animation-duration:" + Math.max(0, p.until - Date.now()) + "ms" })));
   }
 
@@ -1322,13 +1348,17 @@ a.ev:hover { text-decoration: underline; }
     return cached("rc:" + id, sig, () => {
       const rec = it.received;
       const base = rec || v.ans;
-      const followUp = !!(rec && v.ans && ms(v.ans.answered_at) > ms(rec.answered_at));
+      const followUp = !!(rec && v.ans && str(v.ans.answered_at) !== str(rec.answered_at));
+      const takenMs = rec ? ms(rec.received_at) : null;
       const sentMs = v.ans ? ms(v.ans.answered_at) : null;
       let status;
       let stale = false;
       if (it.status === "done") status = it.outcome ? t("doneLine", { outcome: it.outcome }) : t("doneBare");
       else if (followUp) status = t("followUp");
-      else if (rec) status = t("picked");
+      else if (rec) {
+        stale = takenMs != null && Date.now() - takenMs >= SETTINGS.staleHours * HOUR;
+        status = stale ? t("pickedStale", { d: dur(Date.now() - takenMs) }) : t("picked");
+      }
       else if (sentMs != null) {
         stale = Date.now() - sentMs >= SETTINGS.staleHours * HOUR;
         status = stale ? t("notPickedStale", { d: dur(Date.now() - sentMs) }) : t("notPicked", { d: ago(Date.now() - sentMs) });
@@ -1587,6 +1617,7 @@ a.ev:hover { text-decoration: underline; }
     startCountdown();
     render();
     focus("rowbtn-" + it.id);
+    announce(answerLine(a, it, "sending") + t("sentenceSep") + t("sendIn", { n: SETTINGS.undoSeconds }));
   }
 
   function takeBack(id) {
@@ -1596,6 +1627,7 @@ a.ev:hover { text-decoration: underline; }
     S.pending.delete(id);
     render();
     focus("t-" + id);
+    announce(t("undone"));
   }
 
   async function commit(id) {
@@ -1612,9 +1644,11 @@ a.ev:hover { text-decoration: underline; }
       S.pending.delete(id);
       S.recent.add(id);
       S.drafts.delete(id); S.rdrafts.delete(id); S.pick.delete(id); S.to.delete(id);
+      const item = source.items.get(id);
+      if (item) announce(answerLine(answer, item, "sent"));
     } catch (e) {
       S.pending.delete(id);
-      failed(e);
+      failed(e, source.items.get(id));
     } finally {
       S.sending.delete(id);
       render();
@@ -1624,21 +1658,28 @@ a.ev:hover { text-decoration: underline; }
   // Leaving the page (or the phone locking it) sends what is waiting instead of dropping it.
   function flushAll() { for (const id of [...S.pending.keys()]) commit(id); }
 
-  function failed(e) {
+  function failed(e, it) {
     const code = e && e.code;
+    const title = it ? quote(it.title) : "";
     if (code === "invalid_argument") { S.readOnly = true; toast(t("readOnly")); }
-    else if (code === "quota_exceeded") toast(t("quota"));
+    else if (code === "quota_exceeded") toast(t("quota", { title }));
     else if (code === "revoked") { S.fatal = t("revoked"); S.readOnly = true; }
-    else toast(t("writeFail"));
+    else toast(t("writeFail", { title }));
   }
 
-  let toastTimer = 0;
   function toast(message) {
     const box = $("toast");
-    box.textContent = message;
+    const close = $("toast-close");
+    close.textContent = t("close");
+    close.onclick = () => { box.hidden = true; };
     box.hidden = false;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { box.hidden = true; }, 6000);
+    $("toast-msg").textContent = "";
+    setTimeout(() => { $("toast-msg").textContent = message; }, 30);
+  }
+  function announce(message) {
+    const live = $("live");
+    live.textContent = "";
+    setTimeout(() => { live.textContent = message; }, 30);
   }
 
   /* ===== 10. Start ===== */

@@ -2,10 +2,18 @@
   "v": 1,
   "self": "lead",
   "owners": [
-    { "key": "lead", "label": "Product lead" },
-    { "key": "ux", "label": "UX and spec owner" },
-    { "key": "repo", "label": "Repository owner" },
-    { "key": "agent", "label": "The agent itself" }
+    {
+      "key": "lead",
+      "label": "Product lead"
+    },
+    {
+      "key": "ux",
+      "label": "UX and spec owner"
+    },
+    {
+      "key": "repo",
+      "label": "Repository owner"
+    }
   ],
   "locale": "auto"
 }

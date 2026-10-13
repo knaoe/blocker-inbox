@@ -2,33 +2,51 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/knaoe/blocker-inbox/blob/main/schema/config.schema.json",
   "title": "Inbox config (v1)",
-  "description": "Optional settings document at config/inbox. Without it the page uses owner keys as labels and treats \"me\" as the viewer.",
+  "description": "Settings document at config/inbox. Create it before any agent posts: agents read it first to check their access. self is whose items count as \"yours\" for the artifact's owner; anyone else the inbox is shared with picks their owner key once on the page.",
   "type": "object",
-  "required": ["v"],
+  "required": [
+    "v"
+  ],
   "additionalProperties": false,
   "properties": {
-    "v": { "const": 1 },
+    "v": {
+      "const": 1
+    },
     "self": {
       "type": "string",
       "pattern": "^[A-Za-z0-9_.~:@+-]{1,64}$",
-      "description": "The owner key whose items count as \"yours\" by default. Each viewer can override it on the page."
+      "description": "The owner key whose items count as \"yours\" for the artifact's owner."
     },
     "owners": {
       "type": "array",
       "maxItems": 24,
       "items": {
         "type": "object",
-        "required": ["key", "label"],
+        "required": [
+          "key",
+          "label"
+        ],
         "additionalProperties": false,
         "properties": {
-          "key": { "type": "string", "pattern": "^[A-Za-z0-9_.~:@+-]{1,64}$" },
-          "label": { "type": "string", "minLength": 1, "maxLength": 40 }
+          "key": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.~:@+-]{1,64}$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          }
         }
       },
       "description": "Owners in the order the page groups them. Labels are display text."
     },
     "locale": {
-      "enum": ["ja", "en", "auto"],
+      "enum": [
+        "ja",
+        "en",
+        "auto"
+      ],
       "description": "UI language. auto follows the browser."
     }
   }

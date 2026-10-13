@@ -8,7 +8,8 @@
     uv run scripts/validate.py my-item.json     # your own files (item, answer or config is guessed)
 
 Besides the JSON Schema, it checks what a schema cannot express: option keys are unique,
-and recommend.key / if_no_answer.key name one of the options.
+recommend.key names one of the options, an item the agent owns itself (owner == asker)
+has a recommendation and a due time and no stakes, and received matches the current rev.
 """
 import json
 import re
@@ -39,10 +40,20 @@ def check(label, doc, kind=None):
         keys = [o.get("key") for o in doc.get("options", []) if isinstance(o, dict)]
         if len(keys) != len(set(keys)):
             problems.append("options: keys must be unique")
-        for field in ("recommend", "if_no_answer"):
-            key = (doc.get(field) or {}).get("key")
-            if key is not None and key not in keys:
-                problems.append(f"{field}.key {key!r} is not one of the option keys {keys}")
+        key = (doc.get("recommend") or {}).get("key")
+        if key is not None and key not in keys:
+            problems.append(f"recommend.key {key!r} is not one of the option keys {keys}")
+        if doc.get("owner") and doc.get("owner") == doc.get("asker"):
+            # owner == asker: the agent goes ahead with the recommendation at `due` unless someone answers.
+            if doc.get("stakes"):
+                problems.append("owner equals asker, so stakes must be empty: a marked item needs a person to decide")
+            if not doc.get("recommend"):
+                problems.append("owner equals asker: add recommend, the option you will go ahead with")
+            if not doc.get("due"):
+                problems.append("owner equals asker: add due, the time you will go ahead")
+        received = doc.get("received")
+        if isinstance(received, dict) and received.get("item_rev") not in (None, doc.get("rev")):
+            problems.append("received.item_rev differs from rev: remove received whenever you add 1 to rev")
     for p in problems:
         print(f"FAIL {label} [{kind}] {p}")
     if not problems:

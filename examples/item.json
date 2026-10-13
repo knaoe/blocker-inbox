@@ -1,0 +1,25 @@
+{
+  "v": 1,
+  "id": "db-migration-tonight",
+  "rev": 1,
+  "status": "open",
+  "title": "Run the production database migration tonight?",
+  "blocked": "Release of the new search",
+  "why": "Tonight is the last slot that still makes Friday's launch date.",
+  "owner": "lead",
+  "asker": "infra-agent",
+  "project": "Search revamp",
+  "options": [
+    { "key": "A", "label": "Run tonight at 23:00", "consequence": "Search is slow for about 30 minutes. The old format cannot be restored afterwards." },
+    { "key": "B", "label": "Run Saturday morning", "consequence": "Launch slips a day and the announcement date must change." },
+    { "key": "C", "label": "Skip this release", "consequence": "Search moves to the next release." }
+  ],
+  "recommend": { "key": "A", "reason": "Lowest traffic window, and the rehearsal finished within 30 minutes." },
+  "stakes": ["irreversible"],
+  "blocking": true,
+  "evidence": [
+    { "label": "Migration runbook", "url": "https://example.com/runbooks/search-migration" }
+  ],
+  "asked_at": "2026-10-12T05:00:00+09:00",
+  "due": "2026-10-15T15:00:00+09:00"
+}

@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/knaoe/blocker-inbox/blob/main/schema/item.schema.json",
+  "title": "Blocker item (v1)",
+  "description": "One decision, approval or question that an agent needs from a person. Agents write it to items/<id>; people never edit it.",
+  "type": "object",
+  "required": ["v", "id", "rev", "status", "title", "why", "owner", "asker", "options", "asked_at"],
+  "additionalProperties": false,
+  "properties": {
+    "v": { "const": 1, "description": "Schema version." },
+    "id": {
+      "$ref": "#/$defs/pathSegment",
+      "description": "Must equal the document id. Letters, digits and _ . ~ : @ + - only."
+    },
+    "rev": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Start at 1. Add 1 whenever the question changes (new options, new owner, more context). An answer only applies to the rev it was given for."
+    },
+    "status": {
+      "enum": ["open", "done"],
+      "description": "open = waiting or answered but not acted on yet. done = the asker has acted; the page shows it briefly as finished."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "description": "The decision, phrased as a question a busy person can answer."
+    },
+    "blocked": {
+      "type": "string",
+      "maxLength": 80,
+      "description": "What is stopped (or waiting) until this is answered, as a short noun phrase."
+    },
+    "why": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "description": "Why it matters, in one plain line."
+    },
+    "owner": {
+      "$ref": "#/$defs/ownerKey",
+      "description": "Who should decide. A key from config/inbox owners (for example \"lead\", \"ux\", \"repo\", \"agent\")."
+    },
+    "asker": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Name of the agent (or person) asking. Shown on the card and used to route the answer back."
+    },
+    "project": {
+      "type": "string",
+      "maxLength": 40,
+      "description": "Optional short label for the project or team."
+    },
+    "options": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/option" },
+      "description": "2 to 4 choices. Each says, in plain words, what happens if it is picked."
+    },
+    "recommend": {
+      "type": "object",
+      "required": ["key", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "$ref": "#/$defs/optionKey" },
+        "reason": { "type": "string", "minLength": 1, "maxLength": 160 }
+      },
+      "description": "The asker's recommendation and its one-line reason. key must match one of options[].key."
+    },
+    "stakes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["irreversible", "external", "money"] },
+      "description": "Markers shown on the card. irreversible = cannot be undone; external = reaches people outside the team or the public; money = costs or payments. Any marker makes the page ask for a second tap before sending."
+    },
+    "blocking": {
+      "type": "boolean",
+      "default": true,
+      "description": "true = the asker's work is stopped until this is answered. false = the asker keeps working, but needs the answer later."
+    },
+    "evidence": {
+      "type": "array",
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/link" },
+      "description": "Links that back up the question (pull request, report, draft)."
+    },
+    "asked_at": { "type": "string", "format": "date-time", "description": "When the question was first asked (ISO 8601 with offset)." },
+    "reasked_at": { "type": "string", "format": "date-time", "description": "When the asker last re-asked (for example after 24 hours without an answer)." },
+    "due": { "type": "string", "format": "date-time", "description": "Optional deadline after which the answer stops being useful." },
+    "if_no_answer": {
+      "type": "object",
+      "required": ["at", "key"],
+      "additionalProperties": false,
+      "properties": {
+        "at": { "type": "string", "format": "date-time" },
+        "key": { "$ref": "#/$defs/optionKey" }
+      },
+      "description": "Optional. If nobody answers by `at`, the asker will go ahead with option `key`. The card says so in plain words. Do not use it on items with stakes."
+    },
+    "outcome": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Set with status done: what the asker did, in one line."
+    },
+    "done_at": { "type": "string", "format": "date-time", "description": "Set with status done." },
+    "demo": { "type": "boolean", "description": "true marks a made-up example item." },
+    "meta": {
+      "type": "object",
+      "description": "Free-form data for the asker's own use (thread ids, run ids). The page ignores it."
+    }
+  },
+  "$defs": {
+    "pathSegment": {
+      "type": "string",
+      "pattern": "^(?!\\.{1,2}$)[A-Za-z0-9_.~:@+-]{1,128}$"
+    },
+    "ownerKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.~:@+-]{1,64}$"
+    },
+    "optionKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,12}$",
+      "description": "Short key such as A, B, C."
+    },
+    "option": {
+      "type": "object",
+      "required": ["key", "label", "consequence"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "$ref": "#/$defs/optionKey" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 40, "description": "What the person picks, short." },
+        "consequence": { "type": "string", "minLength": 1, "maxLength": 120, "description": "What happens if this is picked, in plain words." }
+      }
+    },
+    "link": {
+      "type": "object",
+      "required": ["label", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string", "minLength": 1, "maxLength": 60 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https?://" }
+      }
+    }
+  }
+}

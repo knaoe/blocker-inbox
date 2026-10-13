@@ -36,7 +36,6 @@
   --fs-s: 0.8125rem;
   --fs-m: 0.9375rem;
   --fs-l: 1.0625rem;
-  --fs-xl: 1.25rem;
   --r-card: 14px;
   --r-ctl: 10px;
 }
@@ -77,11 +76,10 @@ body {
 }
 button, input, textarea, select { font-family: inherit; }
 /* Japanese: break lines between phrases, not inside them (Chromium; others fall back to normal). */
-.card-title, .row-t, .summary, .opt .lbl, .ans-t, .sec-h { word-break: auto-phrase; }
+.card-title, .row-t, .summary, .opt .lbl, .rc-t, .sec-h { word-break: auto-phrase; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .ic { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
-.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* Tally bar */
 .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
@@ -89,26 +87,29 @@ button, input, textarea, select { font-family: inherit; }
 .brand { display: grid; min-width: 0; margin: 0; font-size: inherit; font-weight: inherit; }
 .mark { font-family: var(--font-mono); font-weight: 600; font-size: var(--fs-m); letter-spacing: 0.01em; line-height: 1.3; }
 .sub { font-size: var(--fs-xs); color: var(--muted); line-height: 1.4; }
-.badge { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: var(--fs-xs); white-space: nowrap; }
-.badge .n { font-family: var(--font-mono); font-size: var(--fs-l); line-height: 1; font-variant-numeric: tabular-nums; }
-.badge.is-clear { background: var(--ok-soft); color: var(--ok); }
-.badge[hidden] { display: none; }
+.badge { margin-left: auto; display: inline-flex; align-items: baseline; gap: 6px; color: var(--muted); font-weight: 700; font-size: var(--fs-xs); white-space: nowrap; }
+.badge .n { font-family: var(--font-mono); font-size: 1.375rem; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+.badge.is-clear .n { color: var(--ok); }
 
 /* Page column */
-.wrap { max-width: 640px; margin: 0 auto; padding-inline: 16px; padding-block: 14px 128px; display: grid; gap: 12px; }
+.wrap { max-width: 640px; margin: 0 auto; padding-inline: 16px; padding-block: 14px 96px; display: grid; gap: 12px; }
 .wrap > * { min-width: 0; }
 .summary { margin: 2px 0 0; font-size: var(--fs-l); line-height: 1.6; font-weight: 700; text-wrap: pretty; }
 .summary .urg { color: var(--alert); }
-.banner { margin: 0; padding: 10px 12px; border-radius: 10px; font-size: var(--fs-s); background: var(--surface-2); border: 1px dashed var(--line-strong); }
+.banner { margin: 0; display: grid; gap: 10px; justify-items: start; padding: 10px 12px; border-radius: 10px; font-size: var(--fs-s); background: var(--surface-2); border: 1px dashed var(--line-strong); }
+.banner p { margin: 0; }
 .banner.is-err { border-style: solid; border-color: var(--alert-line); background: var(--alert-soft); }
 
 .sec-h { display: flex; align-items: baseline; gap: 8px; margin: 14px 0 0; font-size: var(--fs-m); font-weight: 700; line-height: 1.4; }
+.sec-h:focus { outline: none; }
 .sec-h .n { font-family: var(--font-mono); font-size: var(--fs-s); color: var(--muted); font-variant-numeric: tabular-nums; }
-.subhead { margin: 2px 0 -4px; display: flex; align-items: center; gap: 6px; font-size: var(--fs-xs); font-weight: 700; color: var(--alert); letter-spacing: 0.04em; }
-.subhead.is-rest { color: var(--muted); }
 .group-h { margin: 6px 0 -4px; display: flex; align-items: baseline; gap: 6px; font-size: var(--fs-s); font-weight: 700; color: var(--muted); line-height: 1.4; }
 .group-h .n { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-.empty { margin: 0; padding: 14px 16px; border-radius: var(--r-card); background: var(--surface); border: 1px solid var(--line); color: var(--muted); font-size: var(--fs-s); }
+.empty { margin: 0; display: grid; gap: 10px; justify-items: start; padding: 14px 16px; border-radius: var(--r-card); background: var(--surface); border: 1px solid var(--line); color: var(--muted); font-size: var(--fs-s); }
+.empty p { margin: 0; }
+.chooser { display: grid; gap: 10px; padding: 14px 16px; border-radius: var(--r-card); background: var(--surface); border: 1.5px solid var(--accent); }
+.chooser p { margin: 0; font-size: var(--fs-s); }
+.chooser .q { font-size: var(--fs-m); font-weight: 700; }
 
 /* Card */
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 16px; display: grid; gap: 10px; min-width: 0; }
@@ -131,8 +132,6 @@ button, input, textarea, select { font-family: inherit; }
 .pill .ic { width: 13px; height: 13px; }
 .stake { display: inline-flex; align-items: center; gap: 4px; padding: 5px 8px 5px 6px; border-radius: 6px; background: var(--stake-bg); color: var(--stake-fg); font-size: var(--fs-xs); font-weight: 700; line-height: 1.2; white-space: nowrap; }
 .stake .ic { width: 13px; height: 13px; }
-.chip-demo { display: inline-flex; padding: 4px 8px; border-radius: 6px; border: 1px dashed var(--line-strong); color: var(--muted); font-size: var(--fs-xs); font-weight: 700; line-height: 1.2; }
-.proj { font-size: var(--fs-xs); color: var(--muted); }
 
 /* Options */
 .opts { display: grid; gap: 8px; }
@@ -153,21 +152,26 @@ button, input, textarea, select { font-family: inherit; }
 .opt.is-rec { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .opt.is-rec .cons, .opt.is-rec .rsn { color: var(--on-accent-muted); }
 .opt.is-rec .rsn b { color: var(--on-accent); }
+.opt.is-rec.is-soft { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
+.opt.is-rec.is-soft .cons, .opt.is-rec.is-soft .rsn { color: var(--muted); }
+.opt.is-rec.is-soft .rsn b { color: var(--ink); }
+.opt.is-rec.is-soft .tag { background: var(--accent); color: var(--on-accent); }
 .opt.is-picked { outline: 3px solid var(--alert); outline-offset: 2px; }
 .opt:disabled { cursor: default; opacity: 0.55; }
 
 .confirm { display: grid; gap: 10px; padding: 14px; border-radius: var(--r-ctl); background: var(--alert-soft); border: 1.5px solid var(--alert-line); }
-.confirm p { margin: 0; font-size: var(--fs-s); line-height: 1.55; }
+.confirm p { margin: 0; font-size: var(--fs-s); line-height: 1.6; }
 .confirm strong { color: var(--alert); }
 
 /* Secondary actions and panels */
 .acts { display: flex; flex-wrap: wrap; gap: 0 18px; margin-top: -2px; }
-.link-btn { all: unset; cursor: pointer; padding: 12px 2px; color: var(--accent); font-weight: 700; font-size: var(--fs-s); line-height: 1.3; }
+.link-btn { all: unset; box-sizing: border-box; cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; padding: 0 2px; color: var(--accent); font-weight: 700; font-size: var(--fs-s); line-height: 1.3; }
 .link-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
 .link-btn[aria-expanded="true"] { text-decoration: underline; text-underline-offset: 4px; }
 .link-btn:disabled { color: var(--muted); cursor: default; }
 .panel { display: grid; gap: 10px; padding: 14px; border-radius: var(--r-ctl); background: var(--surface-2); border: 1px solid var(--line); }
 .panel-l { margin: 0; font-size: var(--fs-s); font-weight: 700; }
+.panel-l:focus { outline: none; }
 .field { width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 8px; border: 1.5px solid var(--line-strong); background: var(--surface); color: var(--ink); font-size: 16px; line-height: 1.5; }
 textarea.field { resize: vertical; min-height: 84px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -193,22 +197,14 @@ textarea.field { resize: vertical; min-height: 84px; }
 a.ev:hover { text-decoration: underline; }
 .ev .ic { width: 12px; height: 12px; }
 
-/* Batch */
-.batch { display: grid; gap: 10px; padding: 12px 14px; border-radius: var(--r-ctl); background: var(--accent-soft); }
-.batch p { margin: 0; font-size: var(--fs-s); font-weight: 700; }
-.batch-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.batch-list label { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; padding: 10px; border-radius: 8px; background: var(--surface); cursor: pointer; font-size: var(--fs-s); line-height: 1.5; }
-.batch-list input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--accent); }
-.batch-list .pick { display: block; color: var(--muted); }
-
 /* Rows for other owners */
 .row { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-ctl); }
-.row.is-urgent { border-color: var(--alert-line); }
 .row > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 12px 14px; min-height: 48px; box-sizing: border-box; }
 .row > summary::-webkit-details-marker { display: none; }
 .row > summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: var(--r-ctl); }
 .row-main { display: grid; gap: 6px; min-width: 0; }
 .row-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.row-top .pill { background: transparent; padding-inline: 0; }
 .row-t { font-weight: 700; font-size: var(--fs-m); line-height: 1.45; overflow-wrap: anywhere; }
 .row-auto { font-size: var(--fs-xs); color: var(--muted); line-height: 1.5; }
 .chev { width: 18px; height: 18px; color: var(--muted); }
@@ -216,17 +212,28 @@ a.ev:hover { text-decoration: underline; }
 .row[open] .chev { transform: rotate(180deg); }
 .row > .card { border: 0; border-radius: 0 0 var(--r-ctl) var(--r-ctl); }
 
-/* Folded sections */
+/* Receipts: what you answered, kept where the card was so nothing jumps under your thumb */
+.receipt { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; align-items: center; padding: 12px 14px; border-radius: var(--r-ctl); background: var(--surface); border: 1px solid var(--line); }
+.receipt.is-sending { border-color: var(--accent); background: var(--accent-soft); }
+.rc-main { display: grid; gap: 3px; min-width: 0; }
+.rc-t { font-weight: 700; font-size: var(--fs-s); line-height: 1.45; overflow-wrap: anywhere; }
+.rc-a { display: flex; gap: 6px; align-items: flex-start; font-size: var(--fs-s); font-weight: 700; color: var(--ok); line-height: 1.45; overflow-wrap: anywhere; }
+.rc-a .ic { margin-top: 2px; }
+.is-sending .rc-a { color: var(--ink); }
+.rc-s { font-size: var(--fs-xs); color: var(--muted); line-height: 1.5; }
+.rc-s.is-stale { color: var(--warn); font-weight: 700; }
+.rc-n { font-size: var(--fs-xs); color: var(--muted); line-height: 1.5; overflow-wrap: anywhere; }
+.rc-bar { position: absolute; left: 0; bottom: 0; width: 100%; height: 3px; background: var(--accent); transform-origin: left center; }
+.receipt > .panel { grid-column: 1 / -1; }
+.receipt:not(.is-sending) { grid-template-columns: minmax(0, 1fr); }
+.receipt:not(.is-sending) > .btn { justify-self: start; }
+
+/* Folded section */
 .fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: var(--fs-m); font-weight: 700; }
 .fold > summary::-webkit-details-marker { display: none; }
 .fold > summary .n { font-family: var(--font-mono); font-size: var(--fs-s); color: var(--muted); }
 .fold[open] .chev { transform: rotate(180deg); }
 .fold-list { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 8px; }
-.ans-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 12px 14px; border-radius: var(--r-ctl); background: var(--surface); border: 1px solid var(--line); }
-.ans-row > div { min-width: 0; display: grid; gap: 2px; }
-.ans-t { font-weight: 700; font-size: var(--fs-s); line-height: 1.45; overflow-wrap: anywhere; }
-.ans-a { display: flex; gap: 6px; align-items: center; color: var(--ok); font-size: var(--fs-s); font-weight: 700; overflow-wrap: anywhere; }
-.ans-n, .ans-time { color: var(--muted); font-size: var(--fs-xs); overflow-wrap: anywhere; }
 
 /* Help */
 .help { margin-top: 18px; border-top: 1px solid var(--line); font-size: var(--fs-s); color: var(--muted); }
@@ -247,26 +254,29 @@ a.ev:hover { text-decoration: underline; }
 .skel i { display: block; height: 12px; border-radius: 6px; background: var(--chip); }
 .skel i:nth-child(1) { width: 40%; } .skel i:nth-child(2) { width: 85%; height: 16px; } .skel i:nth-child(3) { width: 65%; }
 
-/* Toast */
-.toast { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 10; max-width: 560px; margin-inline: auto; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 16px; border-radius: 12px; background: var(--ink); color: var(--surface); box-shadow: var(--shadow); }
-.toast-msg { flex: 1; min-width: 0; font-size: var(--fs-s); font-weight: 700; line-height: 1.4; overflow-wrap: anywhere; }
-.toast .btn { background: transparent; border-color: var(--muted); color: var(--surface); }
+/* Toast (errors and status only; undo lives on the receipt) */
+.toast { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 10; max-width: 560px; margin-inline: auto; padding: 12px 16px; border-radius: 12px; background: var(--ink); color: var(--surface); box-shadow: var(--shadow); font-size: var(--fs-s); font-weight: 700; line-height: 1.5; overflow-wrap: anywhere; }
 
 @media (prefers-reduced-motion: no-preference) {
   .chev { transition: transform 0.15s ease; }
+  .rc-bar { animation: drain linear forwards; }
+  @keyframes drain { from { transform: scaleX(1); } to { transform: scaleX(0); } }
   .toast:not([hidden]) { animation: toast-in 0.18s ease-out; }
   @keyframes toast-in { from { transform: translateY(8px); opacity: 0.4; } to { transform: none; opacity: 1; } }
 }
+@media (prefers-reduced-motion: reduce) { .rc-bar { display: none; } }
 </style>
 
 <svg class="sprite" aria-hidden="true" focusable="false">
   <symbol id="i-irreversible" viewBox="0 0 24 24"><path d="M3 12h11"/><path d="M10 7l5 5-5 5"/><path d="M20 4v16"/></symbol>
-  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.4 2.5 3.5 5.4 3.5 8.5s-1.1 6-3.5 8.5c-2.4-2.5-3.5-5.4-3.5-8.5s1.1-6 3.5-8.5z"/></symbol>
   <symbol id="i-money" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6.5 9.5v5M17.5 9.5v5"/></symbol>
+  <symbol id="i-other" viewBox="0 0 24 24"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 9.5v5"/><path d="M12 17.3v.01"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
   <symbol id="i-stop" viewBox="0 0 24 24"><path d="M8.5 3h7L21 8.5v7L15.5 21h-7L3 15.5v-7z"/><path d="M12 8v5"/><path d="M12 16.5v.01"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12h12"/><path d="M12 6l6 6-6 6"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
   <symbol id="i-auto" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></symbol>
 </svg>
@@ -278,10 +288,7 @@ a.ev:hover { text-decoration: underline; }
   </div>
 </header>
 <main class="wrap" id="app"></main>
-<div class="toast" id="toast" role="status" aria-live="polite" hidden>
-  <span class="toast-msg" id="toast-msg"></span>
-  <button type="button" class="btn" id="toast-undo" hidden></button>
-</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script type="application/json" id="demo-data">
 {
@@ -290,20 +297,18 @@ a.ev:hover { text-decoration: underline; }
     "ja": { "v": 1, "self": "lead", "owners": [
       { "key": "lead", "label": "プロダクトリード" },
       { "key": "ux", "label": "UX・仕様の担当" },
-      { "key": "repo", "label": "リポジトリの管理者" },
-      { "key": "agent", "label": "エージェント自身" } ] },
+      { "key": "repo", "label": "リポジトリの管理者" } ] },
     "en": { "v": 1, "self": "lead", "owners": [
       { "key": "lead", "label": "Product lead" },
       { "key": "ux", "label": "UX and spec owner" },
-      { "key": "repo", "label": "Repository owner" },
-      { "key": "agent", "label": "The agent itself" } ] }
+      { "key": "repo", "label": "Repository owner" } ] }
   },
   "items": {
     "ja": [
-      { "v": 1, "id": "db-migration-tonight", "rev": 1, "status": "open", "demo": true,
+      { "v": 1, "id": "infra-agent-20261012-db-migration", "rev": 1, "status": "open",
         "title": "本番データベースの移行を今夜実行してよいか",
         "blocked": "新しい検索機能のリリース",
-        "why": "金曜の公開日に間に合わせるには、今夜が最後の実行枠です。",
+        "why": "今夜を逃すと、金曜の公開日に間に合いません。",
         "owner": "lead", "asker": "infra-agent", "project": "検索リニューアル",
         "options": [
           { "key": "A", "label": "今夜23時に実行", "consequence": "約30分、検索が遅くなる。移行後は元の形式に戻せない。" },
@@ -314,11 +319,11 @@ a.ev:hover { text-decoration: underline; }
         "evidence": [
           { "label": "移行手順書", "url": "https://example.com/runbooks/search-migration" },
           { "label": "リハーサル結果", "url": "https://example.com/ci/rehearsal/482" } ],
-        "asked_at": "2026-10-12T05:00:00+09:00", "reasked_at": "2026-10-13T05:00:00+09:00", "due": "2026-10-15T15:00:00+09:00" },
-      { "v": 1, "id": "newsletter-oct", "rev": 1, "status": "open", "demo": true,
+        "asked_at": "2026-10-12T05:00:00+09:00", "due": "2026-10-14T23:00:00+09:00" },
+      { "v": 1, "id": "docs-agent-20261013-newsletter", "rev": 1, "status": "open",
         "title": "お知らせメールをこの文面で送ってよいか",
         "blocked": "10月のお知らせ配信",
-        "why": "登録している 1,240 人に届きます。",
+        "why": "件名「新機能が完全無料で使えます」で、登録している 1,240 人に届きます。",
         "owner": "lead", "asker": "docs-agent",
         "options": [
           { "key": "A", "label": "この文面で送る", "consequence": "予定どおり今日の18時に届く。" },
@@ -330,8 +335,8 @@ a.ev:hover { text-decoration: underline; }
           { "label": "文面の下書き", "url": "https://example.com/drafts/newsletter-oct" },
           { "label": "迷惑メール判定のテスト", "url": "https://example.com/reports/spam-check" } ],
         "asked_at": "2026-10-13T03:00:00+09:00", "due": "2026-10-14T15:00:00+09:00" },
-      { "v": 1, "id": "search-api-plan", "rev": 1, "status": "open", "demo": true,
-        "title": "検索APIの有料プランに切り替えるか",
+      { "v": 1, "id": "billing-agent-20261014-search-plan", "rev": 1, "status": "open",
+        "title": "検索APIを有料プラン（月4,800円）に切り替えるか",
         "blocked": "検索の利用上限への対応",
         "why": "このままだと月末の3日間、検索が使えなくなる見込みです。",
         "owner": "lead", "asker": "billing-agent",
@@ -343,18 +348,7 @@ a.ev:hover { text-decoration: underline; }
         "stakes": ["money"], "blocking": false,
         "evidence": [ { "label": "利用量のグラフ", "url": "https://example.com/metrics/search-usage" } ],
         "asked_at": "2026-10-14T04:00:00+09:00", "due": "2026-10-16T05:00:00+09:00" },
-      { "v": 1, "id": "button-label-save", "rev": 1, "status": "open", "demo": true,
-        "title": "設定画面のボタン名を「保存」にそろえてよいか",
-        "blocked": "設定画面の文言の統一",
-        "why": "今は「保存」「更新」「適用」が混ざっていて、問い合わせが出ています。",
-        "owner": "lead", "asker": "design-agent",
-        "options": [
-          { "key": "A", "label": "「保存」にそろえる", "consequence": "3つの画面で文言が変わる。" },
-          { "key": "B", "label": "今のままにする", "consequence": "混在は残る。" } ],
-        "recommend": { "key": "A", "reason": "ほかの画面はすでに「保存」でそろっている。" },
-        "stakes": [], "blocking": false,
-        "asked_at": "2026-10-14T02:00:00+09:00" },
-      { "v": 1, "id": "deps-minor-oct", "rev": 1, "status": "open", "demo": true,
+      { "v": 1, "id": "release-bot-20261014-deps", "rev": 1, "status": "open",
         "title": "依存ライブラリの小さな更新をまとめて入れてよいか",
         "blocked": "来週のリリース準備",
         "why": "12件の更新で、自動テストはすべて通っています。",
@@ -366,7 +360,18 @@ a.ev:hover { text-decoration: underline; }
         "stakes": [], "blocking": true,
         "evidence": [ { "label": "更新の一覧", "url": "https://example.com/pulls/731" } ],
         "asked_at": "2026-10-14T07:00:00+09:00" },
-      { "v": 1, "id": "empty-state-art", "rev": 1, "status": "open", "demo": true,
+      { "v": 1, "id": "design-agent-20261014-save-label", "rev": 1, "status": "open",
+        "title": "設定画面のボタン名を「保存」にそろえてよいか",
+        "blocked": "設定画面の文言の統一",
+        "why": "今は「保存」「更新」「適用」が混ざっていて、問い合わせが出ています。",
+        "owner": "lead", "asker": "design-agent",
+        "options": [
+          { "key": "A", "label": "「保存」にそろえる", "consequence": "3つの画面で文言が変わる。" },
+          { "key": "B", "label": "今のままにする", "consequence": "混在は残る。" } ],
+        "recommend": { "key": "A", "reason": "ほかの画面はすでに「保存」でそろっている。" },
+        "stakes": [], "blocking": false,
+        "asked_at": "2026-10-14T02:00:00+09:00" },
+      { "v": 1, "id": "design-agent-20261012-empty-state", "rev": 1, "status": "open",
         "title": "空の画面にイラストを入れるか、文字だけにするか",
         "blocked": "一覧画面のデザイン確定",
         "why": "決まらないと、実装の見積もりが出せません。",
@@ -377,7 +382,7 @@ a.ev:hover { text-decoration: underline; }
         "recommend": { "key": "B", "reason": "初回のリリースでは表示の速さを優先したい。" },
         "stakes": [], "blocking": true,
         "asked_at": "2026-10-12T07:00:00+09:00" },
-      { "v": 1, "id": "protect-main", "rev": 1, "status": "open", "demo": true,
+      { "v": 1, "id": "release-bot-20261013-protect-main", "rev": 1, "status": "open",
         "title": "main ブランチへの直接プッシュを禁止してよいか",
         "blocked": "リリース手順の自動化",
         "why": "直接プッシュがあると、自動チェックを通らない変更が本番に入ります。",
@@ -387,20 +392,30 @@ a.ev:hover { text-decoration: underline; }
           { "key": "B", "label": "管理者だけ許可する", "consequence": "緊急の修正は今までどおり早く出せる。" } ],
         "recommend": { "key": "B", "reason": "緊急修正の手段を残しつつ、ほとんどの変更をチェックに通せる。" },
         "stakes": [], "blocking": true,
-        "asked_at": "2026-10-13T07:00:00+09:00", "reasked_at": "2026-10-14T07:00:00+09:00" },
-      { "v": 1, "id": "nightly-stop-staging", "rev": 1, "status": "open", "demo": true,
+        "asked_at": "2026-10-13T07:00:00+09:00" },
+      { "v": 1, "id": "infra-agent-20261014-nightly-stop", "rev": 1, "status": "open",
         "title": "テスト環境を夜間（0時〜7時）に自動で止める",
         "blocked": "クラウド費用の削減",
         "why": "月に約9,000円減らせます。夜間に使っている人は見当たりません。",
-        "owner": "agent", "asker": "infra-agent",
+        "owner": "infra-agent", "asker": "infra-agent",
         "options": [
           { "key": "A", "label": "夜間は止める", "consequence": "夜間はテスト環境が使えない。" },
           { "key": "B", "label": "止めない", "consequence": "費用は今のまま。" } ],
         "recommend": { "key": "A", "reason": "過去30日、夜間のアクセスは0件だった。" },
         "stakes": [], "blocking": false,
-        "if_no_answer": { "at": "2026-10-15T09:00:00+09:00", "key": "A" },
-        "asked_at": "2026-10-14T06:00:00+09:00" },
-      { "v": 1, "id": "help-english", "rev": 1, "status": "open", "demo": true,
+        "asked_at": "2026-10-14T06:00:00+09:00", "due": "2026-10-15T09:00:00+09:00" },
+      { "v": 1, "id": "docs-agent-20261014-changelog", "rev": 1, "status": "open",
+        "title": "変更履歴の文体を「です・ます」にそろえるか",
+        "blocked": "変更履歴の公開",
+        "why": "過去の項目と文体がばらばらです。",
+        "owner": "lead", "asker": "docs-agent",
+        "options": [
+          { "key": "A", "label": "「です・ます」にそろえる", "consequence": "過去40件を書き直す。" },
+          { "key": "B", "label": "新しい項目だけそろえる", "consequence": "過去の文体は混ざったまま。" } ],
+        "recommend": { "key": "B", "reason": "過去の項目を読む人は少ない。" },
+        "stakes": [], "blocking": true,
+        "asked_at": "2026-10-14T05:00:00+09:00" },
+      { "v": 1, "id": "docs-agent-20261013-help-english", "rev": 1, "status": "open",
         "title": "ヘルプページの英語版を次の版に回してよいか",
         "blocked": "ヘルプページの公開",
         "why": "英語版の翻訳チェックが終わっていません。",
@@ -410,8 +425,10 @@ a.ev:hover { text-decoration: underline; }
           { "key": "B", "label": "両方そろってから出す", "consequence": "公開が1週間遅れる。" } ],
         "recommend": { "key": "A", "reason": "利用者の9割が日本語版を見ている。" },
         "stakes": [], "blocking": true,
-        "asked_at": "2026-10-13T13:00:00+09:00" },
-      { "v": 1, "id": "store-screenshots", "rev": 1, "status": "done", "demo": true,
+        "asked_at": "2026-10-13T13:00:00+09:00",
+        "received": { "v": 1, "item_id": "docs-agent-20261013-help-english", "item_rev": 1, "kind": "choose", "key": "A",
+          "answered_at": "2026-10-14T06:00:00+09:00", "received_at": "2026-10-14T06:20:00+09:00" } },
+      { "v": 1, "id": "docs-agent-20261012-store-shots", "rev": 1, "status": "done",
         "title": "ストアのスクリーンショットを新しいデザインに差し替えるか",
         "why": "今の画像には、もう存在しない画面が写っています。",
         "owner": "lead", "asker": "docs-agent",
@@ -421,13 +438,15 @@ a.ev:hover { text-decoration: underline; }
         "recommend": { "key": "A", "reason": "古い画像は利用者を混乱させる。" },
         "stakes": [], "blocking": false,
         "asked_at": "2026-10-12T17:00:00+09:00",
+        "received": { "v": 1, "item_id": "docs-agent-20261012-store-shots", "item_rev": 1, "kind": "choose", "key": "A",
+          "answered_at": "2026-10-13T07:00:00+09:00", "received_at": "2026-10-13T07:10:00+09:00" },
         "outcome": "新しいスクリーンショットに差し替えて公開しました。", "done_at": "2026-10-13T13:00:00+09:00" }
     ],
     "en": [
-      { "v": 1, "id": "db-migration-tonight", "rev": 1, "status": "open", "demo": true,
+      { "v": 1, "id": "infra-agent-20261012-db-migration", "rev": 1, "status": "open",
         "title": "Run the production database migration tonight?",
         "blocked": "Release of the new search",
-        "why": "Tonight is the last slot that still makes Friday’s launch date.",
+        "why": "Miss tonight and Friday’s launch date slips.",
         "owner": "lead", "asker": "infra-agent", "project": "Search revamp",
         "options": [
           { "key": "A", "label": "Run tonight at 23:00", "consequence": "Search is slow for about 30 minutes. The old format cannot be restored afterwards." },
@@ -438,11 +457,11 @@ a.ev:hover { text-decoration: underline; }
         "evidence": [
           { "label": "Migration runbook", "url": "https://example.com/runbooks/search-migration" },
           { "label": "Rehearsal results", "url": "https://example.com/ci/rehearsal/482" } ],
-        "asked_at": "2026-10-12T05:00:00+09:00", "reasked_at": "2026-10-13T05:00:00+09:00", "due": "2026-10-15T15:00:00+09:00" },
-      { "v": 1, "id": "newsletter-oct", "rev": 1, "status": "open", "demo": true,
+        "asked_at": "2026-10-12T05:00:00+09:00", "due": "2026-10-14T23:00:00+09:00" },
+      { "v": 1, "id": "docs-agent-20261013-newsletter", "rev": 1, "status": "open",
         "title": "Send the announcement email with this text?",
         "blocked": "October announcement",
-        "why": "It goes to 1,240 subscribers.",
+        "why": "Goes to 1,240 subscribers with the subject “New features, totally free”.",
         "owner": "lead", "asker": "docs-agent",
         "options": [
           { "key": "A", "label": "Send as written", "consequence": "Arrives today at 18:00 as planned." },
@@ -454,8 +473,8 @@ a.ev:hover { text-decoration: underline; }
           { "label": "Draft", "url": "https://example.com/drafts/newsletter-oct" },
           { "label": "Spam filter test", "url": "https://example.com/reports/spam-check" } ],
         "asked_at": "2026-10-13T03:00:00+09:00", "due": "2026-10-14T15:00:00+09:00" },
-      { "v": 1, "id": "search-api-plan", "rev": 1, "status": "open", "demo": true,
-        "title": "Switch the search API to the paid plan?",
+      { "v": 1, "id": "billing-agent-20261014-search-plan", "rev": 1, "status": "open",
+        "title": "Switch the search API to the paid plan (4,800 yen a month)?",
         "blocked": "Handling the search usage limit",
         "why": "At the current rate, search stops for the last 3 days of the month.",
         "owner": "lead", "asker": "billing-agent",
@@ -467,18 +486,7 @@ a.ev:hover { text-decoration: underline; }
         "stakes": ["money"], "blocking": false,
         "evidence": [ { "label": "Usage chart", "url": "https://example.com/metrics/search-usage" } ],
         "asked_at": "2026-10-14T04:00:00+09:00", "due": "2026-10-16T05:00:00+09:00" },
-      { "v": 1, "id": "button-label-save", "rev": 1, "status": "open", "demo": true,
-        "title": "Rename the settings buttons to “Save”?",
-        "blocked": "Consistent wording in settings",
-        "why": "“Save”, “Update” and “Apply” are mixed today, and people ask about it.",
-        "owner": "lead", "asker": "design-agent",
-        "options": [
-          { "key": "A", "label": "Use “Save” everywhere", "consequence": "Wording changes on 3 screens." },
-          { "key": "B", "label": "Leave as is", "consequence": "The mix stays." } ],
-        "recommend": { "key": "A", "reason": "Every other screen already says “Save”." },
-        "stakes": [], "blocking": false,
-        "asked_at": "2026-10-14T02:00:00+09:00" },
-      { "v": 1, "id": "deps-minor-oct", "rev": 1, "status": "open", "demo": true,
+      { "v": 1, "id": "release-bot-20261014-deps", "rev": 1, "status": "open",
         "title": "Merge the small dependency updates together?",
         "blocked": "Next week’s release prep",
         "why": "12 updates, and every automated test passes.",
@@ -490,7 +498,18 @@ a.ev:hover { text-decoration: underline; }
         "stakes": [], "blocking": true,
         "evidence": [ { "label": "List of updates", "url": "https://example.com/pulls/731" } ],
         "asked_at": "2026-10-14T07:00:00+09:00" },
-      { "v": 1, "id": "empty-state-art", "rev": 1, "status": "open", "demo": true,
+      { "v": 1, "id": "design-agent-20261014-save-label", "rev": 1, "status": "open",
+        "title": "Rename the settings buttons to “Save”?",
+        "blocked": "Consistent wording in settings",
+        "why": "“Save”, “Update” and “Apply” are mixed today, and people ask about it.",
+        "owner": "lead", "asker": "design-agent",
+        "options": [
+          { "key": "A", "label": "Use “Save” everywhere", "consequence": "Wording changes on 3 screens." },
+          { "key": "B", "label": "Leave as is", "consequence": "The mix stays." } ],
+        "recommend": { "key": "A", "reason": "Every other screen already says “Save”." },
+        "stakes": [], "blocking": false,
+        "asked_at": "2026-10-14T02:00:00+09:00" },
+      { "v": 1, "id": "design-agent-20261012-empty-state", "rev": 1, "status": "open",
         "title": "Empty screens: illustration or text only?",
         "blocked": "Final design of the list screen",
         "why": "Without a decision, the build cannot be estimated.",
@@ -501,7 +520,7 @@ a.ev:hover { text-decoration: underline; }
         "recommend": { "key": "B", "reason": "For the first release, load speed matters more." },
         "stakes": [], "blocking": true,
         "asked_at": "2026-10-12T07:00:00+09:00" },
-      { "v": 1, "id": "protect-main", "rev": 1, "status": "open", "demo": true,
+      { "v": 1, "id": "release-bot-20261013-protect-main", "rev": 1, "status": "open",
         "title": "Block direct pushes to the main branch?",
         "blocked": "Automating the release steps",
         "why": "Direct pushes let changes reach production without the automated checks.",
@@ -511,20 +530,30 @@ a.ev:hover { text-decoration: underline; }
           { "key": "B", "label": "Allow admins only", "consequence": "Urgent fixes stay fast." } ],
         "recommend": { "key": "B", "reason": "Keeps a path for urgent fixes while most changes get checked." },
         "stakes": [], "blocking": true,
-        "asked_at": "2026-10-13T07:00:00+09:00", "reasked_at": "2026-10-14T07:00:00+09:00" },
-      { "v": 1, "id": "nightly-stop-staging", "rev": 1, "status": "open", "demo": true,
+        "asked_at": "2026-10-13T07:00:00+09:00" },
+      { "v": 1, "id": "infra-agent-20261014-nightly-stop", "rev": 1, "status": "open",
         "title": "Stop the test environment at night (0:00–7:00)",
         "blocked": "Cutting cloud costs",
         "why": "Saves about 9,000 yen a month. Nobody seems to use it at night.",
-        "owner": "agent", "asker": "infra-agent",
+        "owner": "infra-agent", "asker": "infra-agent",
         "options": [
           { "key": "A", "label": "Stop it at night", "consequence": "The test environment is unavailable at night." },
           { "key": "B", "label": "Keep it running", "consequence": "Costs stay the same." } ],
         "recommend": { "key": "A", "reason": "Zero night-time visits in the last 30 days." },
         "stakes": [], "blocking": false,
-        "if_no_answer": { "at": "2026-10-15T09:00:00+09:00", "key": "A" },
-        "asked_at": "2026-10-14T06:00:00+09:00" },
-      { "v": 1, "id": "help-english", "rev": 1, "status": "open", "demo": true,
+        "asked_at": "2026-10-14T06:00:00+09:00", "due": "2026-10-15T09:00:00+09:00" },
+      { "v": 1, "id": "docs-agent-20261014-changelog", "rev": 1, "status": "open",
+        "title": "Use one tone in the changelog?",
+        "blocked": "Publishing the changelog",
+        "why": "Old entries mix casual and formal writing.",
+        "owner": "lead", "asker": "docs-agent",
+        "options": [
+          { "key": "A", "label": "Rewrite all entries", "consequence": "40 old entries get rewritten." },
+          { "key": "B", "label": "Only new entries", "consequence": "Old entries stay mixed." } ],
+        "recommend": { "key": "B", "reason": "Few people read the old entries." },
+        "stakes": [], "blocking": true,
+        "asked_at": "2026-10-14T05:00:00+09:00" },
+      { "v": 1, "id": "docs-agent-20261013-help-english", "rev": 1, "status": "open",
         "title": "Ship the help pages without the English version for now?",
         "blocked": "Publishing the help pages",
         "why": "The English translation review is not finished.",
@@ -534,8 +563,10 @@ a.ev:hover { text-decoration: underline; }
           { "key": "B", "label": "Wait for both", "consequence": "Publishing slips a week." } ],
         "recommend": { "key": "A", "reason": "90% of readers use the Japanese pages." },
         "stakes": [], "blocking": true,
-        "asked_at": "2026-10-13T13:00:00+09:00" },
-      { "v": 1, "id": "store-screenshots", "rev": 1, "status": "done", "demo": true,
+        "asked_at": "2026-10-13T13:00:00+09:00",
+        "received": { "v": 1, "item_id": "docs-agent-20261013-help-english", "item_rev": 1, "kind": "choose", "key": "A",
+          "answered_at": "2026-10-14T06:00:00+09:00", "received_at": "2026-10-14T06:20:00+09:00" } },
+      { "v": 1, "id": "docs-agent-20261012-store-shots", "rev": 1, "status": "done",
         "title": "Replace the store screenshots with the new design?",
         "why": "The current images show screens that no longer exist.",
         "owner": "lead", "asker": "docs-agent",
@@ -545,12 +576,15 @@ a.ev:hover { text-decoration: underline; }
         "recommend": { "key": "A", "reason": "Old images confuse new users." },
         "stakes": [], "blocking": false,
         "asked_at": "2026-10-12T17:00:00+09:00",
+        "received": { "v": 1, "item_id": "docs-agent-20261012-store-shots", "item_rev": 1, "kind": "choose", "key": "A",
+          "answered_at": "2026-10-13T07:00:00+09:00", "received_at": "2026-10-13T07:10:00+09:00" },
         "outcome": "Replaced with the new screenshots and published.", "done_at": "2026-10-13T13:00:00+09:00" }
     ]
   },
   "answers": [
-    { "v": 1, "item_id": "help-english", "item_rev": 1, "kind": "choose", "key": "A", "answered_at": "2026-10-14T07:30:00+09:00", "answered_by": null, "via": "card" },
-    { "v": 1, "item_id": "store-screenshots", "item_rev": 1, "kind": "choose", "key": "A", "answered_at": "2026-10-13T07:00:00+09:00", "answered_by": null, "via": "card" }
+    { "v": 1, "item_id": "docs-agent-20261014-changelog", "item_rev": 1, "kind": "choose", "key": "B", "answered_at": "2026-10-14T08:30:00+09:00", "answered_by": null },
+    { "v": 1, "item_id": "docs-agent-20261013-help-english", "item_rev": 1, "kind": "choose", "key": "A", "answered_at": "2026-10-14T06:00:00+09:00", "answered_by": null },
+    { "v": 1, "item_id": "docs-agent-20261012-store-shots", "item_rev": 1, "kind": "choose", "key": "A", "answered_at": "2026-10-13T07:00:00+09:00", "answered_by": null }
   ]
 }
 </script>
@@ -561,11 +595,12 @@ a.ev:hover { text-decoration: underline; }
 
   /* ===== 1. Settings you may change ===== */
   const SETTINGS = {
+    mode: "auto",        // "auto": live inside claude.ai, demo anywhere else | "live" | "demo"
     locale: "auto",      // "ja" | "en" | "auto" (follows the browser). config/inbox `locale` overrides it.
     staleHours: 24,      // after this many hours without an answer, an item shows "re-ask"
     blockerHours: 48,    // after this many hours it shows "stuck" and moves to the top
-    doneDays: 3,         // finished items stay visible for this many days
-    undoSeconds: 8,      // how long the undo button stays in the toast
+    doneDays: 3,         // finished items stay in "Settled" for this many days
+    undoSeconds: 6,      // an answer is sent this many seconds after the tap; until then "Undo" takes it back
     repoUrl: "https://github.com/knaoe/blocker-inbox",
     storageKey: "blocker-inbox",
   };
@@ -584,30 +619,33 @@ a.ev:hover { text-decoration: underline; }
       summaryOthers: "ほかの人の判断待ちが{n}件あります。",
       summaryNothing: "判断待ちはありません。",
       secMine: "あなたが決めること",
-      subUrgent: "{h}時間以上止まっている",
-      subRest: "そのほか",
       secOthers: "ほかの人が決めること",
-      secAnswered: "回答済み・エージェントの対応待ち",
-      secDone: "完了（直近{d}日）",
+      secClosed: "済んだもの",
+      groupAgent: "エージェントが自分で決めるもの",
+      ownerNone: "担当未設定",
       emptyMine: "あなたが決めることは、いまはありません。",
-      emptyStore: "エージェントが items にブロッカーを書き込むと、ここに表示されます。",
+      emptyStore: "エージェントが items に項目を書き込むと、ここに表示されます。",
+      whoQ: "あなたはどの担当ですか？",
+      whoHint: "選ぶと、あなたの判断待ちが上に並びます。この端末だけの設定です。",
       wait: "{d}待ち",
       tierStale: "再確認",
       tierUrgent: "止まっている",
       overdue: "期限切れ",
-      reasked: "{t}に再確認",
       stake_irreversible: "取り消せない",
       stake_external: "外部に出る",
       stake_money: "お金がかかる",
+      stake_other: "要注意: {v}",
       stakeHelp_irreversible: "あとから元に戻せない",
       stakeHelp_external: "社外の人や公開の場に届く",
       stakeHelp_money: "費用や支払いが発生する",
-      demoChip: "例",
+      stakeHelp_other: "上のどれでもない注意点（エージェントが書いた言葉のまま）",
       blockedLabel: "止まっているもの",
       waitingLabel: "待っているもの",
       recommend: "おすすめ",
       reason: "理由",
       options: "選択肢",
+      agentDue: "返事がなければ {t} に {key}（{label}）で進めます。",
+      agentPlan: "返事がなければ {key}（{label}）で進めます。",
       actReply: "メモで返す",
       actReassign: "担当じゃない",
       noteLabel: "メモ",
@@ -615,56 +653,67 @@ a.ev:hover { text-decoration: underline; }
       pickOptional: "選択肢もあわせて選ぶ（任意）",
       send: "送る",
       cancel: "やめる",
+      close: "閉じる",
       reassignQ: "誰が決めるべきですか？",
       unknownOwner: "わからない",
       reassignNote: "ひとこと（任意）",
-      reassignSend: "回す",
-      confirmStakes: "この項目は{stakes}です。",
-      confirmQ: "{key}（{label}）で確定しますか？",
+      reassignSend: "渡す",
+      reassignHint: "渡すと依頼元のエージェントに伝わり、選んだ担当に付け替えられます。あなたの一覧からは消えます。",
+      confirmLead: "{stakes}の項目です。",
+      confirmIf: "{key}（{label}）を選ぶと: {cons}",
+      confirmQ: "これで確定しますか？",
       confirmYes: "確定する",
       quoteOpen: "「",
       quoteClose: "」",
-      toastChoose: "{key}（{label}）で返しました",
-      toastReply: "メモを返しました",
-      toastReassign: "{owner}に回しました",
-      toastUnknown: "担当がわからないと返しました",
-      toastBatch: "{n}件をおすすめどおりに返しました",
-      toastUndone: "取り消しました",
+      sendingChoose: "{key}（{label}）で返します",
+      sendingReply: "メモを返します",
+      sendingReassign: "{owner}に回します",
+      sendingUnknown: "担当がわからないと返します",
+      sentChoose: "{key}（{label}）で返しました",
+      sentReply: "メモを返しました",
+      sentReassign: "{owner}に回しました",
+      sentUnknown: "担当がわからないと返しました",
+      sendIn: "{n}秒後に送ります",
+      sendingNow: "送っています…",
       undo: "取り消す",
-      ansChoose: "{key}（{label}）と回答",
-      ansReply: "メモで回答",
-      ansReassign: "{owner}に回した",
-      ansUnknown: "担当がわからないと回答",
-      changed: "質問が更新されました。前回の回答: {prev}",
+      notPicked: "エージェントの受け取り待ち · {d}",
+      notPickedStale: "{d}受け取られていません。エージェントが止まっているかもしれません",
+      picked: "エージェントが受け取り、対応中です",
+      followUp: "追加の連絡は受け取り待ちです",
+      doneLine: "完了: {outcome}",
+      doneBare: "完了",
+      change: "変更する",
+      addNote: "メモを追加",
+      current: "いまの回答: {what}",
+      changed: "質問が更新されました。前回の回答: {what}",
       asker: "{name} から",
-      askedAt: "{t}に依頼",
       dueIn: "期限まで{d}",
       duePast: "期限を{d}過ぎた",
-      ifNo: "返事がなければ {t} に {key}（{label}）で進めます。",
-      ifNoPast: "{t} に {key}（{label}）で進める予定でした。",
       evidence: "根拠",
       othersNote: "{owner}の判断待ちです。代わりに答えることもできます。",
-      batchLead: "印のない{n}件は、おすすめどおりに返せます。",
-      batchOpen: "まとめて確認する",
-      batchSend: "{n}件をおすすめで返す",
       readOnly: "閲覧のみの権限のため、ここからは回答できません。",
-      writeFail: "保存できませんでした。通信を確かめて、もう一度押してください。",
-      quota: "保存先がいっぱいです。完了した項目を消してから、もう一度押してください。",
+      writeFail: "送れませんでした。通信を確かめて、もう一度選んでください。",
+      quota: "保存先がいっぱいです。完了した項目を消してから、もう一度選んでください。",
       revoked: "この受付箱を表示する権限がなくなりました。",
       loadFail: "読み込めませんでした。ページを開き直してください。",
-      demoBanner: "デモ表示です。項目はすべて架空の例で、回答はこの画面を閉じると消えます。",
-      exampleBanner: "架空の例が含まれています（「例」の印）。実際の項目が届いたら消してかまいません。",
+      offline: "受付箱に接続できません。サインインしているか、共有の権限があるかを確かめてください。",
+      noConfig: "設定（config/inbox）がまだありません。エージェントは最初にこれを読んで、書き込めるかを確かめます（README の手順）。",
+      demoBanner: "架空の例で動くデモです。回答は保存されません。",
+      demoInLive: "例を表示しています。ここでの回答は保存されません。",
+      showDemo: "例で動きを見る",
+      backToLive: "実際の受付箱に戻る",
       helpTitle: "この画面の見方",
       helpTime: "依頼から{s}時間たつと「再確認」、{b}時間たつと「止まっている」になり、いちばん上に並びます。",
+      helpAnswer: "選択肢を押すと、{u}秒後に依頼元へ送られます。それまでは「取り消す」で戻せます。印のある項目だけは、確定の前にもう一度確かめます。",
+      helpPickup: "送ったあとは「受け取り待ち」、エージェントが読むと「対応中」、終わると「完了」に変わります。",
       helpStakes: "印の意味",
-      helpAnswer: "選択肢を押すと、その場で依頼元に返ります。間違えたら、下に出る「取り消す」で戻せます。印のある項目だけは、確定の前にもう一度確かめます。",
-      helpStore: "エージェントは items に項目を書き、あなたの回答は answers に保存されます。エージェントはそれを読んで作業を続けます。",
       helpSelf: "あなたの担当",
       helpSelfHint: "この端末だけの設定です。",
+      helpStore: "エージェントは items に項目を書き、あなたの回答は answers に保存されます。",
       helpRepo: "テンプレートと説明（GitHub）",
       untitled: "（題名なし）",
       ago: "{d}前",
-      doneAgo: "{d}前に完了",
+      justNow: "たった今",
       durMin: "{n}分",
       durHour: "{n}時間",
       durDay: "{n}日",
@@ -684,30 +733,33 @@ a.ev:hover { text-decoration: underline; }
       summaryOthers_one: "1 item is waiting on someone else.",
       summaryNothing: "Nothing is waiting for a decision.",
       secMine: "Yours to decide",
-      subUrgent: "Stuck for {h}+ hours",
-      subRest: "Everything else",
       secOthers: "Waiting on others",
-      secAnswered: "Answered, waiting for the agent",
-      secDone: "Done (last {d} days)",
+      secClosed: "Settled",
+      groupAgent: "Agents deciding for themselves",
+      ownerNone: "No owner",
       emptyMine: "Nothing needs your decision right now.",
-      emptyStore: "When an agent writes a blocker to items, it shows up here.",
+      emptyStore: "When an agent writes an item to items, it shows up here.",
+      whoQ: "Which owner are you?",
+      whoHint: "Pick one and your decisions move to the top. Saved on this device only.",
       wait: "waiting {d}",
       tierStale: "re-ask",
       tierUrgent: "stuck",
       overdue: "overdue",
-      reasked: "re-asked {t}",
       stake_irreversible: "Can’t undo",
       stake_external: "Goes outside",
       stake_money: "Costs money",
+      stake_other: "Caution: {v}",
       stakeHelp_irreversible: "cannot be undone later",
       stakeHelp_external: "reaches people outside the team or the public",
       stakeHelp_money: "costs or payments",
-      demoChip: "Example",
+      stakeHelp_other: "any other caution, in the agent’s own words",
       blockedLabel: "Stopped:",
       waitingLabel: "Waiting:",
       recommend: "Recommended",
       reason: "Why",
       options: "Options",
+      agentDue: "If nobody answers, it goes ahead with {key} ({label}) at {t}.",
+      agentPlan: "If nobody answers, it goes ahead with {key} ({label}).",
       actReply: "Reply with a note",
       actReassign: "Not mine",
       noteLabel: "Note",
@@ -715,58 +767,67 @@ a.ev:hover { text-decoration: underline; }
       pickOptional: "Also pick an option (optional)",
       send: "Send",
       cancel: "Cancel",
+      close: "Close",
       reassignQ: "Who should decide?",
       unknownOwner: "I don’t know",
       reassignNote: "Short note (optional)",
       reassignSend: "Hand over",
-      confirmStakes: "This item is marked {stakes}.",
-      confirmQ: "Send {key} ({label})?",
+      reassignHint: "The asking agent is told and moves the item to that owner. It leaves your list.",
+      confirmLead: "Marked {stakes}.",
+      confirmIf: "If you pick {key} ({label}): {cons}",
+      confirmQ: "Send this answer?",
       confirmYes: "Confirm",
       quoteOpen: "“",
       quoteClose: "”",
-      toastChoose: "Sent {key} ({label})",
-      toastReply: "Note sent",
-      toastReassign: "Handed to {owner}",
-      toastUnknown: "Sent “I don’t know who decides”",
-      toastBatch: "Accepted {n} recommendations",
-      toastBatch_one: "Accepted 1 recommendation",
-      toastUndone: "Undone",
+      sendingChoose: "Sending {key} ({label})",
+      sendingReply: "Sending your note",
+      sendingReassign: "Handing to {owner}",
+      sendingUnknown: "Sending “I don’t know who decides”",
+      sentChoose: "Sent {key} ({label})",
+      sentReply: "Sent your note",
+      sentReassign: "Handed to {owner}",
+      sentUnknown: "Sent “I don’t know who decides”",
+      sendIn: "Sends in {n}s",
+      sendingNow: "Sending…",
       undo: "Undo",
-      ansChoose: "Answered {key} ({label})",
-      ansReply: "Replied with a note",
-      ansReassign: "Handed to {owner}",
-      ansUnknown: "Said they don’t know who decides",
-      changed: "The question changed after your answer ({prev}).",
+      notPicked: "Not picked up by the agent yet · {d}",
+      notPickedStale: "Not picked up for {d}. The agent may have stopped",
+      picked: "Picked up. The agent is on it",
+      followUp: "Your follow-up has not been picked up yet",
+      doneLine: "Done: {outcome}",
+      doneBare: "Done",
+      change: "Change",
+      addNote: "Add a note",
+      current: "Current answer: {what}",
+      changed: "The question changed after your answer ({what}).",
       asker: "from {name}",
-      askedAt: "asked {t}",
       dueIn: "due in {d}",
       duePast: "{d} overdue",
-      ifNo: "If nobody answers, the agent goes ahead with {key} ({label}) at {t}.",
-      ifNoPast: "Planned to go ahead with {key} ({label}) at {t}.",
       evidence: "Evidence",
       othersNote: "Waiting on {owner}. You can answer for them.",
-      batchLead: "{n} unmarked items can take the recommended answer.",
-      batchOpen: "Review together",
-      batchSend: "Accept {n} recommendations",
-      batchSend_one: "Accept 1 recommendation",
       readOnly: "You can view this inbox but not answer.",
-      writeFail: "Could not save. Check your connection and press again.",
-      quota: "The store is full. Delete finished items, then press again.",
+      writeFail: "Could not send. Check your connection and pick again.",
+      quota: "The store is full. Delete finished items, then pick again.",
       revoked: "You no longer have access to this inbox.",
       loadFail: "Could not load. Open the page again.",
-      demoBanner: "Demo: every item is made up, and answers vanish when you close the page.",
-      exampleBanner: "Some items are made-up examples (marked Example). Delete them when real items arrive.",
+      offline: "Can’t reach this inbox. Check that you are signed in and have access.",
+      noConfig: "config/inbox does not exist yet. Agents read it first to check they can write here (see README).",
+      demoBanner: "A demo with made-up items. Answers are not saved.",
+      demoInLive: "Showing examples. Answers here are not saved.",
+      showDemo: "Try it with examples",
+      backToLive: "Back to the real inbox",
       helpTitle: "How this page works",
       helpTime: "After {s} hours an item shows “re-ask”. After {b} hours it shows “stuck” and moves to the top.",
+      helpAnswer: "An option you tap is sent {u} seconds later; until then, Undo takes it back. Items with a marker ask you to confirm first.",
+      helpPickup: "After sending it shows “not picked up yet”, then “the agent is on it”, then “done”.",
       helpStakes: "Markers",
-      helpAnswer: "Tapping an option sends it to the agent right away. Undo appears below. Items with a marker ask you to confirm first.",
-      helpStore: "Agents write items. Your answers are saved in answers, and agents read them back.",
       helpSelf: "You are",
       helpSelfHint: "Saved on this device only.",
+      helpStore: "Agents write items. Your answers are saved in answers.",
       helpRepo: "Template and docs on GitHub",
       untitled: "(no title)",
       ago: "{d} ago",
-      doneAgo: "done {d} ago",
+      justNow: "just now",
       durMin: "{n} min",
       durHour: "{n}h",
       durDay: "{n}d",
@@ -806,6 +867,7 @@ a.ev:hover { text-decoration: underline; }
     return t("durDay", { n: Math.floor(hours / 24) });
   }
   const at = (when) => fmtTime.format(new Date(when));
+  const ago = (span) => (span < 60000 ? t("justNow") : t("ago", { d: dur(span) }));
   const quote = (s) => t("quoteOpen") + s + t("quoteClose");
 
   const local = {
@@ -841,70 +903,68 @@ a.ev:hover { text-decoration: underline; }
   }
 
   /* ===== 4. State ===== */
+  // Two data sources can exist side by side: the live store and the built-in examples.
+  const data = { live: null, demo: null };
   const S = {
-    mode: "loading",          // loading | live | demo
-    loaded: false,
-    items: new Map(),         // id -> normalized item
-    answers: new Map(),       // item id -> answer
-    config: { v: 1 },
+    mode: "loading",       // loading | live | demo | offline
+    view: "live",          // which source the page shows: "live" or "demo"
+    isOwner: false,
     userId: null,
     readOnly: false,
     fatal: "",
-    open: new Set(),          // expanded rows and folded sections
-    panel: null,              // { id, type: "reply" | "reassign" }
-    confirm: null,            // { id, key } while a marked item waits for its second tap
-    batchOpen: false,
-    batchSkip: new Set(),
-    drafts: new Map(),        // id -> note text (reply)
-    rdrafts: new Map(),       // id -> note text (reassign)
-    pick: new Map(),          // id -> option key picked inside the reply panel
-    to: new Map(),            // id -> owner key picked inside the reassign panel ("" = don't know)
-    busy: new Set(),
+    open: new Set(),       // expanded rows and folded sections
+    panel: null,           // { id, type: "reply" | "reassign" | "note" }
+    confirm: null,         // { id, key }: a marked item waiting for its second tap
+    reopen: new Set(),     // answered items opened again to change the answer
+    recent: new Set(),     // answered during this visit; the receipt stays where the card was
+    pinned: new Set(),     // changed from inside "Settled": keep it there instead of moving it up
+    pending: new Map(),    // id -> { answer, until, timer }: not sent yet, can be taken back
+    sending: new Set(),    // being written right now
+    drafts: new Map(),     // id -> text in the reply / note box
+    rdrafts: new Map(),    // id -> text in the reassign box
+    pick: new Map(),       // id -> option key picked inside the reply box
+    to: new Map(),         // id -> owner key picked inside the reassign box ("" = don't know)
     tiers: "",
   };
-  let store = null;
-  let guardUntil = 0;
-  const guard = (span) => { guardUntil = Date.now() + span; };
-  const guarded = () => Date.now() < guardUntil;
+  const src = () => (S.view === "demo" ? data.demo : data.live) || { items: new Map(), answers: new Map(), config: null, loaded: false };
 
-  /* ===== 5. Stores. Each one: start(handlers), writeAnswer(id, answer), deleteAnswer(id). ===== */
-  function liveStore(db) {
-    return {
-      start({ onItems, onAnswers, onConfig, onError }) {
-        db.collection("items").onSnapshot((snap) => onItems(snap.docs.map((d) => ({ ...d.data(), id: d.id }))), onError);
-        db.collection("answers").onSnapshot((snap) => onAnswers(snap.docs.map((d) => ({ ...d.data(), item_id: d.id }))), onError);
-        db.doc("config/inbox").onSnapshot((d) => onConfig(d.exists ? d.data() : null), onError);
-      },
-      writeAnswer: (id, answer) => db.doc("answers/" + id).set(answer),
-      deleteAnswer: (id) => db.doc("answers/" + id).delete(),
+  /* ===== 5. Sources. Each holds items, answers, config and a store with writeAnswer(id, answer). ===== */
+  // The page only ever writes answers/<id>. It never edits items and never deletes answers.
+  function liveSource(db) {
+    const s = { items: new Map(), answers: new Map(), config: null, configSeen: false, loaded: false };
+    s.store = { writeAnswer: (id, answer) => db.doc("answers/" + id).set(answer) };
+    s.start = () => {
+      db.collection("items").onSnapshot((snap) => { s.items = readItems(snap.docs.map((d) => ({ ...d.data(), id: d.id }))); s.loaded = true; render(); }, onError);
+      db.collection("answers").onSnapshot((snap) => { s.answers = readAnswers(snap.docs.map((d) => ({ ...d.data(), item_id: d.id }))); render(); }, onError);
+      db.doc("config/inbox").onSnapshot((d) => { s.config = d.exists ? d.data() : null; s.configSeen = true; applyConfig(); render(); }, onError);
     };
+    return s;
   }
 
-  function demoStore() {
-    let data = {};
-    try { data = JSON.parse($("demo-data").textContent); } catch (_) {}
-    const shift = Date.now() - (ms(data.anchor) || Date.now());
+  function demoSource() {
+    let raw = {};
+    try { raw = JSON.parse($("demo-data").textContent); } catch (_) {}
+    const shift = Date.now() - (ms(raw.anchor) || Date.now());
     const move = (v) => (ms(v) == null ? v : new Date(ms(v) + shift).toISOString());
-    const items = ((data.items && (data.items[lang] || data.items.en)) || []).map((it) => ({
-      ...it,
-      asked_at: move(it.asked_at), reasked_at: move(it.reasked_at), due: move(it.due), done_at: move(it.done_at),
-      if_no_answer: it.if_no_answer ? { ...it.if_no_answer, at: move(it.if_no_answer.at) } : undefined,
+    const moveAnswer = (a) => (a ? { ...a, answered_at: move(a.answered_at), received_at: move(a.received_at) } : a);
+    const items = ((raw.items && (raw.items[lang] || raw.items.en)) || []).map((it) => ({
+      ...it, asked_at: move(it.asked_at), due: move(it.due), done_at: move(it.done_at), received: moveAnswer(it.received),
     }));
-    const answers = new Map((data.answers || []).map((a) => [a.item_id, { ...a, answered_at: move(a.answered_at) }]));
-    let push = () => {};
-    return {
-      start({ onItems, onAnswers, onConfig }) {
-        push = () => onAnswers([...answers.values()]);
-        onConfig((data.config && (data.config[lang] || data.config.en)) || null);
-        onItems(items);
-        push();
-      },
-      writeAnswer: async (id, answer) => { answers.set(id, answer); push(); },
-      deleteAnswer: async (id) => { answers.delete(id); push(); },
+    const s = {
+      items: readItems(items),
+      answers: readAnswers((raw.answers || []).map(moveAnswer)),
+      config: (raw.config && (raw.config[lang] || raw.config.en)) || null,
+      configSeen: true,
+      loaded: true,
     };
+    s.store = { writeAnswer: async (id, answer) => { s.answers.set(id, answer); } };
+    return s;
   }
 
-  /* ===== 6. Reading what agents wrote (be forgiving: render what makes sense, skip the rest) ===== */
+  /* ===== 6. Reading what agents wrote (forgiving: render what makes sense, never drop a warning) ===== */
+  function readItems(list) { return new Map(list.map(normalize).filter((it) => it.id).map((it) => [it.id, it])); }
+  function readAnswers(list) { return new Map(list.filter((a) => a && str(a.item_id)).map((a) => [str(a.item_id), a])); }
+
   function normalize(raw) {
     const it = { id: str(raw.id), sig: JSON.stringify(raw) };
     it.rev = Number.isInteger(raw.rev) && raw.rev > 0 ? raw.rev : 1;
@@ -914,37 +974,49 @@ a.ev:hover { text-decoration: underline; }
     it.blocked = str(raw.blocked);
     it.owner = str(raw.owner);
     it.asker = str(raw.asker);
+    it.selfOwned = !!it.owner && it.owner === it.asker;   // the agent decides itself unless someone objects
     it.project = str(raw.project);
     it.options = (Array.isArray(raw.options) ? raw.options : [])
       .filter((o) => o && str(o.key) && str(o.label))
       .slice(0, 4)
       .map((o) => ({ key: str(o.key), label: str(o.label), consequence: str(o.consequence) }));
     const rec = raw.recommend && it.options.find((o) => o.key === str(raw.recommend.key));
-    it.recommend = rec ? { key: rec.key, reason: str(raw.recommend.reason) } : null;
-    it.stakes = Array.isArray(raw.stakes) ? STAKES.filter((s) => raw.stakes.includes(s)) : [];
+    it.recommend = rec ? { key: rec.key, label: rec.label, reason: str(raw.recommend.reason) } : null;
+    // Fail closed: a stakes value the page does not know still counts as stakes.
+    const stakes = Array.isArray(raw.stakes) ? raw.stakes : raw.stakes ? [raw.stakes] : [];
+    it.stakes = STAKES.filter((s) => stakes.includes(s));
+    it.otherStakes = stakes.filter((s) => !STAKES.includes(s)).map((s) => (typeof s === "string" ? s.trim() : JSON.stringify(s))).filter(Boolean).slice(0, 3);
+    it.marked = it.stakes.length + it.otherStakes.length > 0;
     it.blocking = raw.blocking !== false;
     it.evidence = (Array.isArray(raw.evidence) ? raw.evidence : []).filter((l) => l && str(l.label)).slice(0, 5)
       .map((l) => ({ label: str(l.label), url: str(l.url) }));
     it.askedMs = ms(raw.asked_at);
-    it.reaskedMs = ms(raw.reasked_at);
     it.dueMs = ms(raw.due);
     it.doneMs = ms(raw.done_at);
     it.outcome = str(raw.outcome);
-    it.demo = raw.demo === true;
-    const fallback = raw.if_no_answer && it.options.find((o) => o.key === str(raw.if_no_answer.key));
-    it.ifNo = fallback && ms(raw.if_no_answer.at) != null ? { atMs: ms(raw.if_no_answer.at), key: fallback.key, label: fallback.label } : null;
+    it.received = raw.received && typeof raw.received === "object" && ms(raw.received.answered_at) != null ? raw.received : null;
     return it;
   }
 
   function ownerMap() {
     const map = new Map();
-    for (const o of Array.isArray(S.config.owners) ? S.config.owners : []) {
+    const cfg = src().config;
+    for (const o of cfg && Array.isArray(cfg.owners) ? cfg.owners : []) {
       if (o && str(o.key)) map.set(str(o.key), str(o.label) || str(o.key));
     }
-    for (const it of S.items.values()) if (it.owner && !map.has(it.owner)) map.set(it.owner, it.owner);
+    for (const it of src().items.values()) if (it.owner && !it.selfOwned && !map.has(it.owner)) map.set(it.owner, it.owner);
     return map;
   }
-  const selfKey = () => local.get("self") || str(S.config.self) || "me";
+  const ownerLabel = (k) => (k ? ownerMap().get(k) || k : t("ownerNone"));
+
+  // "Yours" comes from config/inbox only for the artifact's owner (and in demo); everyone else picks once.
+  function selfKey() {
+    const saved = local.get("self:" + S.view);
+    if (saved) return saved;
+    const cfg = src().config;
+    if ((S.isOwner || S.view === "demo") && cfg && str(cfg.self)) return str(cfg.self);
+    return null;
+  }
 
   /* ===== 7. Deriving the view ===== */
   function tierOf(it, now) {
@@ -963,37 +1035,44 @@ a.ev:hover { text-decoration: underline; }
   }
   function derive(now) {
     const self = selfKey();
-    const out = { self, mine: [], others: [], answered: [], done: [] };
-    for (const it of S.items.values()) {
-      const ans = S.answers.get(it.id) || null;
+    const out = { self, mine: [], others: [], closed: [], mineOpen: 0, urgentOpen: 0, othersOpen: 0 };
+    for (const it of src().items.values()) {
+      const ans = src().answers.get(it.id) || null;
       const applies = !!ans && (Number(ans.item_rev) || 1) === it.rev;
-      const v = { it, ans: applies ? ans : null, prev: ans && !applies ? ans : null, ...tierOf(it, now) };
+      const v = { it, ans: applies ? ans : null, prev: ans && !applies ? ans : null, pend: S.pending.get(it.id) || null, ...tierOf(it, now) };
+      v.open = !v.pend && !v.ans && it.status === "open";
       if (it.status === "done") {
-        if (it.doneMs == null || now - it.doneMs <= SETTINGS.doneDays * 24 * HOUR) out.done.push(v);
-      } else if (applies) out.answered.push(v);
-      else if (it.owner === self) out.mine.push(v);
-      else out.others.push(v);
+        if (it.doneMs == null || now - it.doneMs <= SETTINGS.doneDays * 24 * HOUR) out.closed.push(v);
+        continue;
+      }
+      if (S.pinned.has(it.id) || (v.ans && !v.pend && !S.recent.has(it.id))) { out.closed.push(v); continue; }
+      const mine = !!self && !it.selfOwned && it.owner === self;
+      (mine ? out.mine : out.others).push(v);
+      if (v.open) { if (mine) { out.mineOpen++; if (v.urgent) out.urgentOpen++; } else out.othersOpen++; }
     }
     out.mine.sort(byUrgency);
     out.others.sort(byUrgency);
-    out.answered.sort((a, b) => (ms(b.ans.answered_at) || 0) - (ms(a.ans.answered_at) || 0));
-    out.done.sort((a, b) => (b.it.doneMs || 0) - (a.it.doneMs || 0));
+    const closedAt = (v) => v.it.doneMs || ms(v.ans && v.ans.answered_at) || 0;
+    out.closed.sort((a, b) => closedAt(b) - closedAt(a));
     return out;
   }
-  function answerText(ans, it, toast) {
+
+  function answerLine(ans, it, phase) {
     if (!ans) return "";
-    const p = toast ? "toast" : "ans";
     if (ans.kind === "choose") {
       const o = it.options.find((x) => x.key === ans.key);
-      return t(p + "Choose", { key: ans.key, label: o ? o.label : "?" });
+      return t(phase + "Choose", { key: ans.key, label: o ? o.label : "?" });
     }
-    if (ans.kind === "reassign") {
-      return ans.reassign_to ? t(p + "Reassign", { owner: ownerMap().get(ans.reassign_to) || ans.reassign_to }) : t(p + "Unknown");
-    }
-    return t(p + "Reply");
+    if (ans.kind === "reassign") return ans.reassign_to ? t(phase + "Reassign", { owner: ownerLabel(ans.reassign_to) }) : t(phase + "Unknown");
+    return t(phase + "Reply");
+  }
+  function answerWhat(ans, it) {
+    // Short form for notices: "A（label）", or the sent line for other kinds.
+    if (ans && ans.kind === "choose") { const o = it.options.find((x) => x.key === ans.key); return ans.key + (o ? (lang === "ja" ? "（" + o.label + "）" : " (" + o.label + ")") : ""); }
+    return answerLine(ans, it, "sent");
   }
 
-  /* ===== 8. Rendering. Blocks are cached by a signature, so live updates never rebuild what you are touching. ===== */
+  /* ===== 8. Rendering. Blocks are cached by a signature, so a live update never rebuilds what you touch. ===== */
   const cache = new Map();
   function cached(key, sig, build) {
     const hit = cache.get(key);
@@ -1004,7 +1083,7 @@ a.ev:hover { text-decoration: underline; }
   }
   function ui(id) {
     return [S.panel && S.panel.id === id ? S.panel.type : 0, S.confirm && S.confirm.id === id ? S.confirm.key : 0,
-      S.busy.has(id), S.pick.get(id) || 0, S.to.has(id) ? S.to.get(id) : 0];
+      S.pick.get(id) || 0, S.to.has(id) ? S.to.get(id) : 0, S.reopen.has(id), S.sending.has(id)];
   }
   let ctx = "";
 
@@ -1016,23 +1095,28 @@ a.ev:hover { text-decoration: underline; }
   function relText(kind, when, now) {
     if (kind === "wait") return t("wait", { d: dur(now - when) });
     if (kind === "due") return when >= now ? t("dueIn", { d: dur(when - now) }) : t("duePast", { d: dur(now - when) });
-    if (kind === "done") return t("doneAgo", { d: dur(now - when) });
-    return t("ago", { d: dur(now - when) });
+    return ago(now - when);
   }
 
   function pill(v) {
     const it = v.it;
-    const cls = "pill" + (v.tier === "urgent" ? " is-urgent" : v.tier === "stale" ? " is-stale" : "");
     const text = h("span");
     if (v.overdue && (it.askedMs == null || Date.now() - it.askedMs < SETTINGS.blockerHours * HOUR)) text.append(t("overdue"));
     else {
       if (it.askedMs != null) text.append(rel("wait", it.askedMs));
       if (v.tier !== "fresh") text.append(t("listSep") + t(v.tier === "urgent" ? "tierUrgent" : "tierStale"));
     }
-    return h("span", { class: cls }, icon(v.tier === "urgent" ? "stop" : "clock"), text);
+    return h("span", { class: "pill" + (v.tier === "urgent" ? " is-urgent" : v.tier === "stale" ? " is-stale" : "") },
+      icon(v.tier === "urgent" ? "stop" : "clock"), text);
   }
-  function stakeChip(s) {
-    return h("span", { class: "stake" }, icon(s), t("stake_" + s));
+  function stakeChips(it) {
+    return [
+      ...it.stakes.map((s) => h("span", { class: "stake" }, icon(s), t("stake_" + s))),
+      ...it.otherStakes.map((s) => h("span", { class: "stake" }, icon("other"), t("stake_other", { v: s }))),
+    ];
+  }
+  function stakeNames(it) {
+    return [...it.stakes.map((s) => t("stake_" + s)), ...it.otherStakes.map((s) => t("stake_other", { v: s }))];
   }
 
   function card(v, inRow) {
@@ -1043,29 +1127,27 @@ a.ev:hover { text-decoration: underline; }
 
   function buildCard(v, inRow) {
     const it = v.it;
-    const el = h("article", { class: "card" + (v.urgent && !inRow ? " is-urgent" : ""), id: "card-" + it.id, "aria-labelledby": "t-" + it.id });
-    el.append(h("div", { class: "card-top" },
-      pill(v),
-      it.stakes.map(stakeChip),
-      it.demo && S.mode === "live" ? h("span", { class: "chip-demo", text: t("demoChip") }) : null,
-      it.project ? h("span", { class: "proj", text: it.project }) : null));
+    const reopened = S.reopen.has(it.id) && v.ans;
+    const el = h("article", { class: "card" + (v.urgent && !inRow && !reopened ? " is-urgent" : ""), id: "card-" + it.id, "aria-labelledby": "t-" + it.id });
+    el.append(h("div", { class: "card-top" }, pill(v), stakeChips(it)));
     el.append(h("h3", { class: "card-title", id: "t-" + it.id, tabindex: "-1", text: it.title }));
     if (it.blocked) el.append(h("p", { class: "blocked" }, h("span", { class: "blocked-k", text: t(it.blocking ? "blockedLabel" : "waitingLabel") }), it.blocked));
     if (it.why) el.append(h("p", { class: "why", text: it.why }));
-    if (v.prev) el.append(h("p", { class: "notice", text: t("changed", { prev: answerText(v.prev, it) }) }));
-    if (inRow) el.append(h("p", { class: "notice is-subtle", text: t("othersNote", { owner: ownerMap().get(it.owner) || it.owner }) }));
-    if (it.ifNo) el.append(autoLine(it));
+    if (reopened) el.append(h("p", { class: "notice is-subtle", text: t("current", { what: answerWhat(v.ans, it) }) }));
+    else if (v.prev) el.append(h("p", { class: "notice", text: t("changed", { what: answerWhat(v.prev, it) }) }));
+    if (inRow) el.append(h("p", { class: "notice is-subtle", text: t("othersNote", { owner: ownerLabel(it.owner) }) }));
+    if (it.selfOwned && it.recommend) el.append(autoLine(it));
     el.append(optionsBlock(it));
-    el.append(actions(it));
-    if (S.panel && S.panel.id === it.id) el.append(S.panel.type === "reply" ? replyPanel(it) : reassignPanel(it));
+    el.append(actions(it, reopened));
+    if (S.panel && S.panel.id === it.id && (S.panel.type === "reply" || S.panel.type === "reassign")) el.append(S.panel.type === "reply" ? replyPanel(it) : reassignPanel(it));
     el.append(meta(it, v));
     return el;
   }
 
   function autoLine(it) {
-    const past = it.ifNo.atMs < Date.now();
-    return h("p", { class: "auto" }, icon("auto"),
-      h("span", { text: t(past ? "ifNoPast" : "ifNo", { t: at(it.ifNo.atMs), key: it.ifNo.key, label: it.ifNo.label }) }));
+    const r = it.recommend;
+    const text = it.dueMs != null ? t("agentDue", { t: at(it.dueMs), key: r.key, label: r.label }) : t("agentPlan", { key: r.key, label: r.label });
+    return h("p", { class: "auto" }, icon("auto"), h("span", { text }));
   }
 
   function optionsBlock(it) {
@@ -1073,12 +1155,12 @@ a.ev:hover { text-decoration: underline; }
     const rec = it.recommend;
     const order = rec ? [it.options.find((o) => o.key === rec.key), ...it.options.filter((o) => o.key !== rec.key)] : it.options;
     const picked = S.confirm && S.confirm.id === it.id ? S.confirm.key : null;
-    const locked = S.readOnly || S.busy.has(it.id);
+    const locked = S.readOnly || S.sending.has(it.id);
     for (const o of order) {
       const isRec = !!rec && rec.key === o.key;
       box.append(h("button", {
         type: "button",
-        class: "opt" + (isRec ? " is-rec" : "") + (picked === o.key ? " is-picked" : ""),
+        class: "opt" + (isRec ? " is-rec" : "") + (isRec && it.marked ? " is-soft" : "") + (picked === o.key ? " is-picked" : ""),
         id: "opt-" + it.id + "-" + o.key,
         disabled: locked,
         "aria-pressed": picked ? String(picked === o.key) : null,
@@ -1095,23 +1177,27 @@ a.ev:hover { text-decoration: underline; }
   }
 
   function confirmRow(it, key) {
-    const o = it.options.find((x) => x.key === key) || { label: "" };
-    const stakes = it.stakes.map((s) => quote(t("stake_" + s))).join(lang === "ja" ? "" : t("listSep"));
+    const o = it.options.find((x) => x.key === key) || { label: "", consequence: "" };
+    const stakes = stakeNames(it).map(quote).join(lang === "ja" ? "" : t("listSep"));
     return h("div", { class: "confirm", role: "group", "aria-labelledby": "cq-" + it.id },
-      h("p", { id: "cq-" + it.id }, h("strong", { text: t("confirmStakes", { stakes }) }), " ", t("confirmQ", { key, label: o.label })),
+      h("p", { id: "cq-" + it.id },
+        h("strong", { text: t("confirmLead", { stakes }) }), " ",
+        o.consequence ? t("confirmIf", { key, label: o.label, cons: o.consequence }) + " " : "",
+        t("confirmQ")),
       h("div", { class: "row-btns" },
-        h("button", { type: "button", class: "btn is-danger", id: "confirm-" + it.id, disabled: S.busy.has(it.id),
-          onclick: () => { if (!guarded()) submit(it, { kind: "choose", key }); } }, t("confirmYes")),
-        h("button", { type: "button", class: "btn", onclick: () => { S.confirm = null; render(); focus("opt-" + it.id + "-" + key); } }, t("cancel"))));
+        h("button", { type: "button", class: "btn is-danger", id: "confirm-" + it.id, onclick: () => answer(it, { kind: "choose", key }) }, t("confirmYes")),
+        h("button", { type: "button", class: "btn", id: "cancel-" + it.id, onclick: () => { S.confirm = null; render(); focus("opt-" + it.id + "-" + key); } }, t("cancel"))));
   }
 
-  function actions(it) {
+  function actions(it, reopened) {
     const open = S.panel && S.panel.id === it.id ? S.panel.type : null;
     return h("div", { class: "acts" },
       h("button", { type: "button", class: "link-btn", id: "act-reply-" + it.id, disabled: S.readOnly, "aria-expanded": String(open === "reply"),
         onclick: () => togglePanel(it, "reply") }, t("actReply")),
       h("button", { type: "button", class: "link-btn", id: "act-reassign-" + it.id, disabled: S.readOnly, "aria-expanded": String(open === "reassign"),
-        onclick: () => togglePanel(it, "reassign") }, t("actReassign")));
+        onclick: () => togglePanel(it, "reassign") }, t("actReassign")),
+      reopened ? h("button", { type: "button", class: "link-btn", id: "act-close-" + it.id,
+        onclick: () => { S.reopen.delete(it.id); S.confirm = null; S.panel = null; render(); focus("rowbtn-" + it.id); } }, t("close")) : null);
   }
 
   function togglePanel(it, type) {
@@ -1119,22 +1205,27 @@ a.ev:hover { text-decoration: underline; }
     S.panel = same ? null : { id: it.id, type };
     S.confirm = null;
     render();
-    if (!same) focus(type === "reply" ? "note-" + it.id : "rq-" + it.id);
+    if (!same) focus(type === "reassign" ? "rq-" + it.id : "note-" + it.id);
+  }
+
+  function noteBox(id, placeholder) {
+    const ta = h("textarea", { class: "field", id: "note-" + id, rows: "3", maxlength: "1000", placeholder,
+      oninput: (e) => { S.drafts.set(id, e.target.value); if (ta.onsync) ta.onsync(); } });
+    ta.value = S.drafts.get(id) || "";
+    return ta;
   }
 
   function replyPanel(it) {
     const id = it.id;
-    const ta = h("textarea", { class: "field", id: "note-" + id, rows: "3", maxlength: "1000", placeholder: t("notePlaceholder"),
-      oninput: (e) => { S.drafts.set(id, e.target.value); sync(); } });
-    ta.value = S.drafts.get(id) || "";
+    const ta = noteBox(id, t("notePlaceholder"));
     const send = h("button", { type: "button", class: "btn is-primary", id: "send-" + id, onclick: () => {
       const note = ta.value.trim();
       const key = S.pick.get(id);
-      if (key) submit(it, { kind: "choose", key, note: note || undefined });
-      else if (note) submit(it, { kind: "reply", note });
+      if (key) answer(it, { kind: "choose", key, note: note || undefined });
+      else if (note) answer(it, { kind: "reply", note });
     } }, t("send"));
-    const sync = () => { send.disabled = S.busy.has(id) || !(ta.value.trim() || S.pick.get(id)); };
-    sync();
+    ta.onsync = () => { send.disabled = !(ta.value.trim() || S.pick.get(id)); };
+    ta.onsync();
     const chips = it.options.length ? h("div", { class: "chips", role: "radiogroup", "aria-labelledby": "pl-" + id },
       it.options.map((o) => h("button", { type: "button", class: "chip", role: "radio", id: "pick-" + id + "-" + o.key,
         "aria-checked": String(S.pick.get(id) === o.key),
@@ -1163,9 +1254,10 @@ a.ev:hover { text-decoration: underline; }
         choices.map((c) => h("button", { type: "button", class: "chip", role: "radio", id: "to-" + id + "-" + (c.k || "unknown"),
           "aria-checked": String(chosen === c.k), onclick: () => { S.to.set(id, c.k); render(); } }, c.label))),
       note,
+      h("p", { class: "rc-n", text: t("reassignHint") }),
       h("div", { class: "row-btns" },
-        h("button", { type: "button", class: "btn is-primary", id: "rsend-" + id, disabled: chosen == null || S.busy.has(id), onclick: () => {
-          submit(it, { kind: "reassign", reassign_to: chosen || null, note: str(note.value) || undefined });
+        h("button", { type: "button", class: "btn is-primary", id: "rsend-" + id, disabled: chosen == null, onclick: () => {
+          answer(it, { kind: "reassign", reassign_to: chosen || null, note: str(note.value) || undefined });
         } }, t("reassignSend")),
         h("button", { type: "button", class: "btn", onclick: () => { S.panel = null; render(); focus("act-reassign-" + id); } }, t("cancel"))));
   }
@@ -1173,8 +1265,7 @@ a.ev:hover { text-decoration: underline; }
   function meta(it, v) {
     const parts = [];
     if (it.asker) parts.push(h("span", { class: "asker", text: t("asker", { name: it.asker }) }));
-    if (it.askedMs != null) parts.push(h("span", { text: t("askedAt", { t: at(it.askedMs) }) }));
-    if (it.reaskedMs != null) parts.push(h("span", { text: t("reasked", { t: at(it.reaskedMs) }) }));
+    if (it.project) parts.push(h("span", { text: it.project }));
     if (it.dueMs != null) parts.push(h("span", { class: "due" + (v.overdue ? " is-over" : ""), title: at(it.dueMs) }, rel("due", it.dueMs)));
     const evs = it.evidence.length ? h("div", { class: "evs" }, h("span", { class: "evs-k", text: t("evidence") }),
       it.evidence.map((l) => isWebLink(l.url)
@@ -1183,18 +1274,19 @@ a.ev:hover { text-decoration: underline; }
     return h("div", { class: "meta" }, parts.length ? h("p", { class: "meta-line" }, parts) : null, evs);
   }
 
-  function row(v) {
+  // Other owners' open items: a compact row that opens into the full card.
+  function othersRow(v) {
     const it = v.it;
     const id = it.id;
-    const sig = JSON.stringify([it.sig, v.ans, v.prev, v.tier, v.overdue, ctx]);
+    const sig = JSON.stringify([it.sig, v.prev, v.tier, v.overdue, ctx]);
     const el = cached("row:" + id, sig, () => {
-      const det = h("details", { class: "row" + (v.urgent ? " is-urgent" : ""), id: "row-" + id });
+      const det = h("details", { class: "row", id: "row-" + id });
       det.addEventListener("toggle", () => { if (det.open) S.open.add(id); else S.open.delete(id); render(); });
       det.append(h("summary", null,
         h("span", { class: "row-main" },
-          h("span", { class: "row-top" }, pill(v), it.stakes.map(stakeChip), it.demo && S.mode === "live" ? h("span", { class: "chip-demo", text: t("demoChip") }) : null),
+          h("span", { class: "row-top" }, pill(v), stakeChips(it)),
           h("span", { class: "row-t", text: it.title }),
-          it.ifNo ? h("span", { class: "row-auto", text: t("ifNo", { t: at(it.ifNo.atMs), key: it.ifNo.key, label: it.ifNo.label }) }) : null),
+          it.selfOwned && it.recommend ? h("span", { class: "row-auto", text: autoLine(it).textContent }) : null),
         h("span", { class: "chev" }, icon("chev"))));
       return det;
     });
@@ -1205,7 +1297,80 @@ a.ev:hover { text-decoration: underline; }
     return el;
   }
 
-  // <details> keeps its own open state; we only mirror it into S.open and back, never rebuild on toggle.
+  // The answer you just tapped, before it is sent: one row with Undo, where the card was.
+  function sendingRow(v) {
+    const it = v.it;
+    const p = v.pend;
+    const writing = S.sending.has(it.id);
+    const sig = JSON.stringify(["snd", it.sig, p.until, writing, ctx]);
+    return cached("snd:" + it.id, sig, () => h("div", { class: "receipt is-sending", id: "rc-" + it.id },
+      h("div", { class: "rc-main" },
+        h("span", { class: "rc-t", text: it.title }),
+        h("span", { class: "rc-a", role: "status" }, icon("send"), answerLine(p.answer, it, "sending")),
+        h("span", { class: "rc-s", "data-until": writing ? null : p.until, text: writing ? t("sendingNow") : t("sendIn", { n: secondsLeft(p.until) }) })),
+      writing ? null : h("button", { type: "button", class: "btn is-primary", id: "rowbtn-" + it.id, onclick: () => takeBack(it.id) }, t("undo")),
+      writing ? null : h("i", { class: "rc-bar", style: "animation-duration:" + Math.max(0, p.until - Date.now()) + "ms" })));
+  }
+
+  // A sent answer: what you said, whether the agent picked it up, and what you can still do.
+  function receiptRow(v, inFold) {
+    const it = v.it;
+    const id = it.id;
+    if (S.reopen.has(id) && v.ans && it.status === "open") return card(v, false);
+    const notePanel = S.panel && S.panel.id === id && S.panel.type === "note";
+    const sig = JSON.stringify(["rc", it.sig, v.ans, notePanel, S.readOnly, ctx, !!inFold]);
+    return cached("rc:" + id, sig, () => {
+      const rec = it.received;
+      const base = rec || v.ans;
+      const followUp = !!(rec && v.ans && ms(v.ans.answered_at) > ms(rec.answered_at));
+      const sentMs = v.ans ? ms(v.ans.answered_at) : null;
+      let status;
+      let stale = false;
+      if (it.status === "done") status = it.outcome ? t("doneLine", { outcome: it.outcome }) : t("doneBare");
+      else if (followUp) status = t("followUp");
+      else if (rec) status = t("picked");
+      else if (sentMs != null) {
+        stale = Date.now() - sentMs >= SETTINGS.staleHours * HOUR;
+        status = stale ? t("notPickedStale", { d: dur(Date.now() - sentMs) }) : t("notPicked", { d: ago(Date.now() - sentMs) });
+      }
+      let action = null;
+      if (it.status === "open" && !S.readOnly) {
+        action = rec
+          ? h("button", { type: "button", class: "btn", id: "rowbtn-" + id, "aria-expanded": String(notePanel),
+              onclick: () => { S.panel = notePanel ? null : { id, type: "note" }; render(); if (!notePanel) focus("note-" + id); } }, t("addNote"))
+          : h("button", { type: "button", class: "btn", id: "rowbtn-" + id,
+              onclick: () => { S.reopen.add(id); if (inFold) S.pinned.add(id); S.panel = null; S.confirm = null; render(); focus("t-" + id); } }, t("change"));
+      }
+      const el = h("div", { class: "receipt", id: "rc-" + id },
+        h("div", { class: "rc-main" },
+          h("span", { class: "rc-t", text: it.title }),
+          base ? h("span", { class: "rc-a" }, icon("check"), answerLine(base, it, "sent")) : null,
+          base && base.note ? h("span", { class: "rc-n", text: base.note }) : null,
+          followUp ? h("span", { class: "rc-n", text: answerLine(v.ans, it, "sent") + (v.ans.note ? ": " + v.ans.note : "") }) : null,
+          status ? h("span", { class: "rc-s" + (stale ? " is-stale" : ""), text: status }) : null),
+        action);
+      if (notePanel) {
+        const ta = noteBox(id, t("notePlaceholder"));
+        const send = h("button", { type: "button", class: "btn is-primary", id: "send-" + id,
+          onclick: () => { const note = ta.value.trim(); if (note) answer(it, { kind: "reply", note }); } }, t("send"));
+        ta.onsync = () => { send.disabled = !ta.value.trim(); };
+        ta.onsync();
+        el.append(h("div", { class: "panel" },
+          h("label", { class: "panel-l", for: "note-" + id, text: t("noteLabel") }), ta,
+          h("div", { class: "row-btns" }, send,
+            h("button", { type: "button", class: "btn", onclick: () => { S.panel = null; render(); focus("rowbtn-" + id); } }, t("cancel")))));
+      }
+      return el;
+    });
+  }
+
+  function entry(v, inOthers) {
+    if (v.pend) return sendingRow(v);
+    if (v.ans) return receiptRow(v);
+    return inOthers ? othersRow(v) : card(v, false);
+  }
+
+  // <details> keeps its own open state; we mirror it into S.open and back, never rebuild on toggle.
   function syncOpen(el, key) {
     if (!el.dataset.bound) {
       el.dataset.bound = "1";
@@ -1215,162 +1380,135 @@ a.ev:hover { text-decoration: underline; }
     return el;
   }
 
-  function fold(key, title, count, list) {
-    const el = h("details", { class: "fold", id: "fold-" + key });
-    el.append(h("summary", null, h("span", { text: title }), h("span", { class: "n", text: String(count) }), h("span", { class: "chev" }, icon("chev"))));
-    el.append(h("ul", { class: "fold-list" }, list));
+  function closedBlock(list) {
+    const el = syncOpen(cached("closed", JSON.stringify([list.length, ctx]), () =>
+      h("details", { class: "fold", id: "fold-closed" },
+        h("summary", null, h("span", { text: t("secClosed") }), h("span", { class: "n", text: String(list.length) }), h("span", { class: "chev" }, icon("chev"))),
+        h("ul", { class: "fold-list" }))), "fold:closed");
+    reconcile(el.querySelector(".fold-list"), list.map((v) => {
+      const li = cached("li:" + v.it.id, "li", () => h("li"));
+      reconcile(li, [v.pend ? sendingRow(v) : receiptRow(v, true)]);
+      return li;
+    }));
     return el;
   }
 
-  function answeredBlock(list) {
-    const sig = JSON.stringify([list.map((v) => [v.it.sig, v.ans]), S.readOnly, ctx, [...S.busy]]);
-    return syncOpen(cached("answered", sig, () => fold("answered", t("secAnswered"), list.length, list.map((v) => {
-      const it = v.it;
-      const when = ms(v.ans.answered_at);
-      return h("li", { class: "ans-row" },
-        h("div", null,
-          h("span", { class: "ans-t", text: it.title }),
-          h("span", { class: "ans-a" }, icon("check"), answerText(v.ans, it)),
-          v.ans.note ? h("span", { class: "ans-n", text: v.ans.note }) : null,
-          when != null ? h("span", { class: "ans-time" }, rel("ago", when)) : null),
-        h("button", { type: "button", class: "btn", id: "undo-" + it.id, disabled: S.readOnly || S.busy.has(it.id),
-          onclick: () => undo([{ id: it.id, prev: null }]) }, t("undo")));
-    }))), "fold:answered");
-  }
-
-  function doneBlock(list) {
-    const sig = JSON.stringify([list.map((v) => v.it.sig), ctx]);
-    return syncOpen(cached("done", sig, () => fold("done", t("secDone", { d: SETTINGS.doneDays }), list.length, list.map((v) =>
-      h("li", { class: "ans-row" },
-        h("div", null,
-          h("span", { class: "ans-t", text: v.it.title }),
-          v.it.outcome ? h("span", { class: "ans-a" }, icon("check"), v.it.outcome) : null,
-          v.it.doneMs != null ? h("span", { class: "ans-time" }, rel("done", v.it.doneMs)) : null))))), "fold:done");
-  }
-
-  function batchBlock(list) {
-    if (S.readOnly || list.length < 2) return null;
-    const sig = JSON.stringify([list.map((v) => v.it.sig), S.batchOpen, [...S.batchSkip], ctx, [...S.busy]]);
-    return cached("batch", sig, () => {
-      const box = h("div", { class: "batch", id: "batch" }, h("p", { text: t("batchLead", { n: list.length }) }));
-      if (!S.batchOpen) {
-        box.append(h("div", { class: "row-btns" }, h("button", { type: "button", class: "btn", id: "batch-open",
-          onclick: () => { S.batchOpen = true; render(); focus("bx-" + list[0].it.id); } }, t("batchOpen"))));
-        return box;
-      }
-      const chosen = list.filter((v) => !S.batchSkip.has(v.it.id));
-      box.append(h("ul", { class: "batch-list" }, list.map((v) => {
-        const it = v.it;
-        const o = it.options.find((x) => x.key === it.recommend.key);
-        const cb = h("input", { type: "checkbox", id: "bx-" + it.id, onchange: (e) => {
-          if (e.target.checked) S.batchSkip.delete(it.id); else S.batchSkip.add(it.id);
-          render();
-        } });
-        cb.checked = !S.batchSkip.has(it.id);
-        return h("li", null, h("label", { for: "bx-" + it.id }, cb,
-          h("span", null, it.title, h("span", { class: "pick", text: o.key + "  " + o.label }))));
-      })));
-      box.append(h("div", { class: "row-btns" },
-        h("button", { type: "button", class: "btn is-primary", id: "batch-send", disabled: !chosen.length,
-          onclick: () => submitBatch(chosen) }, t("batchSend", { n: chosen.length })),
-        h("button", { type: "button", class: "btn", onclick: () => { S.batchOpen = false; render(); focus("batch-open"); } }, t("cancel"))));
-      return box;
-    });
+  function chooser() {
+    const owners = [...ownerMap()];
+    return h("div", { class: "chooser", id: "chooser" },
+      h("p", { class: "q", text: t("whoQ") }),
+      h("div", { class: "chips" }, owners.map(([k, label]) => h("button", { type: "button", class: "chip", id: "who-" + k,
+        onclick: () => { local.set("self:" + S.view, k); render(); focus("mine-h"); } }, label))),
+      h("p", { text: t("whoHint") }));
   }
 
   function helpBlock() {
     const owners = ownerMap();
     const self = selfKey();
-    if (!owners.has(self)) owners.set(self, self);
-    const sig = JSON.stringify([[...owners], self, ctx]);
+    if (self && !owners.has(self)) owners.set(self, self);
+    const sig = JSON.stringify([[...owners], self, ctx, S.mode]);
     return syncOpen(cached("help", sig, () => {
       const el = h("details", { class: "help", id: "help" });
-      const select = h("select", { id: "self-select", onchange: (e) => { local.set("self", e.target.value); render(); } },
+      const select = h("select", { id: "self-select", onchange: (e) => { local.set("self:" + S.view, e.target.value || null); render(); } },
+        self ? null : h("option", { value: "", text: "—" }),
         [...owners].map(([k, label]) => h("option", { value: k, text: label })));
-      select.value = self;
+      select.value = self || "";
       el.append(
         h("summary", null, h("span", { text: t("helpTitle") }), h("span", { class: "chev" }, icon("chev"))),
         h("div", { class: "help-body" },
           h("p", { text: t("helpTime", { s: SETTINGS.staleHours, b: SETTINGS.blockerHours }) }),
-          h("p", { text: t("helpAnswer") }),
+          h("p", { text: t("helpAnswer", { u: SETTINGS.undoSeconds }) }),
+          h("p", { text: t("helpPickup") }),
           h("div", null, h("p", { class: "panel-l", text: t("helpStakes") }),
-            h("ul", null, STAKES.map((s) => h("li", null, stakeChip(s), h("span", { text: t("stakeHelp_" + s) }))))),
+            h("ul", null,
+              STAKES.map((s) => h("li", null, h("span", { class: "stake" }, icon(s), t("stake_" + s)), h("span", { text: t("stakeHelp_" + s) }))),
+              h("li", null, h("span", { class: "stake" }, icon("other"), t("stake_other", { v: "…" })), h("span", { text: t("stakeHelp_other") })))),
           h("div", { class: "help-self" }, h("label", { for: "self-select", text: t("helpSelf") }), select, h("span", { text: t("helpSelfHint") })),
           h("p", { text: t("helpStore") }),
+          S.mode === "live" && S.view === "live" ? h("p", null, h("button", { type: "button", class: "btn", id: "help-demo", onclick: () => showDemo(true) }, t("showDemo"))) : null,
           h("p", null, h("a", { href: SETTINGS.repoUrl, target: "_blank", rel: "noopener noreferrer", text: t("helpRepo") }))));
       return el;
     }), "fold:help");
   }
 
   function summary(d) {
-    const urgent = d.mine.filter((v) => v.urgent).length;
     const p = h("p", { class: "summary" });
-    if (d.mine.length) {
-      p.append(t("summaryMine", { n: d.mine.length }));
-      if (urgent) p.append(" ", h("span", { class: "urg", text: t("summaryUrgent", { n: urgent, h: SETTINGS.blockerHours }) }));
-    } else if (d.others.length) {
-      p.append(t("summaryNoneMine"), " ", t("summaryOthers", { n: d.others.length }));
+    if (d.mineOpen) {
+      p.append(t("summaryMine", { n: d.mineOpen }));
+      if (d.urgentOpen) p.append(" ", h("span", { class: "urg", text: t("summaryUrgent", { n: d.urgentOpen, h: SETTINGS.blockerHours }) }));
+    } else if (d.othersOpen) {
+      p.append(t("summaryNoneMine"), " ", t("summaryOthers", { n: d.othersOpen }));
     } else {
       p.append(t("summaryNothing"));
     }
     return p;
   }
 
+  function banners() {
+    const out = [];
+    if (S.fatal) out.push(h("div", { class: "banner is-err", role: "alert" }, h("p", { text: S.fatal })));
+    if (S.mode === "demo") out.push(h("div", { class: "banner" }, h("p", { text: t("demoBanner") })));
+    if (S.mode === "live" && S.view === "demo") out.push(h("div", { class: "banner" }, h("p", { text: t("demoInLive") }),
+      h("button", { type: "button", class: "btn", id: "back-live", onclick: () => showDemo(false) }, t("backToLive"))));
+    if (S.mode === "live" && S.view === "live" && data.live.configSeen && !data.live.config) out.push(h("div", { class: "banner" }, h("p", { text: t("noConfig") })));
+    if (S.readOnly && S.view === "live") out.push(h("div", { class: "banner" }, h("p", { text: t("readOnly") })));
+    return out;
+  }
+
   function render() {
     const now = Date.now();
     const keep = captureFocus();
-    ctx = JSON.stringify([lang, [...ownerMap()], selfKey()]);
+    ctx = JSON.stringify([lang, [...ownerMap()], selfKey(), S.view, S.mode]);
     const d = derive(now);
     S.tiers = tierSig(now);
+    const ready = S.mode !== "loading" && src().loaded;
 
     const badge = $("badge");
-    badge.hidden = S.mode === "loading" || !S.loaded;
-    badge.className = "badge" + (d.mine.length ? "" : " is-clear");
-    badge.replaceChildren(h("span", { class: "n", text: String(d.mine.length) }), h("span", { text: t(d.mine.length ? "badge" : "badgeClear") }));
+    badge.hidden = !ready;
+    badge.className = "badge" + (d.mineOpen ? "" : " is-clear");
+    badge.replaceChildren(h("span", { class: "n", text: String(d.mineOpen) }), h("span", { text: t(d.mineOpen ? "badge" : "badgeClear") }));
     $("brand-sub").textContent = t("appSub");
 
     const blocks = [];
-    if (S.fatal) blocks.push(h("p", { class: "banner is-err", role: "alert", text: S.fatal }));
-    if (!S.loaded) {
+    if (S.mode === "offline") {
+      blocks.push(h("div", { class: "banner is-err", role: "alert" }, h("p", { text: t("offline") }),
+        S.view === "demo" ? h("p", { text: t("demoInLive") })
+          : h("button", { type: "button", class: "btn", id: "offline-demo", onclick: () => showDemo(true) }, t("showDemo"))));
+      if (S.view !== "demo") { blocks.push(helpBlock()); reconcile($("app"), blocks); restoreFocus(keep); return; }
+    }
+    if (!ready) {
       blocks.push(h("p", { class: "summary", text: t("loading") }), h("div", { class: "skel", "aria-hidden": "true" }, h("i"), h("i"), h("i")));
     } else {
-      blocks.push(summary(d));
-      if (S.mode === "demo") blocks.push(h("p", { class: "banner", text: t("demoBanner") }));
-      else if ([...S.items.values()].some((it) => it.demo)) blocks.push(h("p", { class: "banner", text: t("exampleBanner") }));
-      if (S.readOnly) blocks.push(h("p", { class: "banner", text: t("readOnly") }));
-
-      blocks.push(h("h2", { class: "sec-h", id: "mine-h", tabindex: "-1" }, t("secMine"), h("span", { class: "n", text: String(d.mine.length) })));
-      if (!d.mine.length) {
-        blocks.push(h("p", { class: "empty", text: S.items.size ? t("emptyMine") : t("emptyMine") + " " + t("emptyStore") }));
-      } else {
-        // Stuck items first, then the batch strip, then the rest: the strip never pushes a blocker down.
-        const batch = batchBlock(d.mine.filter((v) => !v.it.stakes.length && v.it.recommend));
-        const urgent = d.mine.filter((v) => v.urgent);
-        const rest = d.mine.filter((v) => !v.urgent);
-        if (urgent.length && rest.length) blocks.push(h("p", { class: "subhead" }, icon("stop"), t("subUrgent", { h: SETTINGS.blockerHours })));
-        urgent.forEach((v) => blocks.push(card(v, false)));
-        if (urgent.length && rest.length) blocks.push(h("p", { class: "subhead is-rest", text: t("subRest") }));
-        if (batch) blocks.push(batch);
-        rest.forEach((v) => blocks.push(card(v, false)));
+      blocks.push(summary(d), ...banners());
+      if (!d.self && ownerMap().size) blocks.push(chooser());
+      else {
+        blocks.push(h("h2", { class: "sec-h", id: "mine-h", tabindex: "-1" }, t("secMine")));
+        if (!d.mine.length) {
+          const emptyStore = !src().items.size && S.view === "live";
+          blocks.push(h("div", { class: "empty" }, h("p", { text: emptyStore ? t("emptyMine") + " " + t("emptyStore") : t("emptyMine") }),
+            emptyStore && S.mode === "live" ? h("button", { type: "button", class: "btn", id: "empty-demo", onclick: () => showDemo(true) }, t("showDemo")) : null));
+        } else {
+          d.mine.forEach((v) => blocks.push(entry(v, false)));
+        }
       }
-
       if (d.others.length) {
-        blocks.push(h("h2", { class: "sec-h", id: "others-h", tabindex: "-1" }, t("secOthers"), h("span", { class: "n", text: String(d.others.length) })));
-        const owners = [...ownerMap().keys()];
+        blocks.push(h("h2", { class: "sec-h", id: "others-h", tabindex: "-1" }, t("secOthers"), h("span", { class: "n", text: String(d.othersOpen) })));
+        const order = [...ownerMap().keys()];
         const groups = new Map();
         for (const v of d.others) {
-          if (!groups.has(v.it.owner)) groups.set(v.it.owner, []);
-          groups.get(v.it.owner).push(v);
+          const key = v.it.selfOwned ? "\u0000agent" : v.it.owner || "\u0000none";
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(v);
         }
-        const order = (k) => { const i = owners.indexOf(k); return i < 0 ? 999 : i; };
-        for (const key of [...groups.keys()].sort((a, b) => order(a) - order(b))) {
+        const rank = (k) => (k === "\u0000agent" ? 1e6 : k === "\u0000none" ? 1e6 + 1 : order.indexOf(k) < 0 ? 1e5 : order.indexOf(k));
+        for (const key of [...groups.keys()].sort((a, b) => rank(a) - rank(b))) {
           const list = groups.get(key);
-          blocks.push(h("h3", { class: "group-h" }, ownerMap().get(key) || key || "—", h("span", { class: "n", text: String(list.length) })));
-          list.forEach((v) => blocks.push(row(v)));
+          const label = key === "\u0000agent" ? t("groupAgent") : key === "\u0000none" ? t("ownerNone") : ownerLabel(key);
+          blocks.push(h("h3", { class: "group-h" }, label, h("span", { class: "n", text: String(list.filter((v) => v.open).length) })));
+          list.forEach((v) => blocks.push(entry(v, true)));
         }
       }
-      if (d.answered.length) blocks.push(answeredBlock(d.answered));
-      if (d.done.length) blocks.push(doneBlock(d.done));
+      if (d.closed.length) blocks.push(closedBlock(d.closed));
     }
     blocks.push(helpBlock());
     reconcile($("app"), blocks);
@@ -1401,97 +1539,90 @@ a.ev:hover { text-decoration: underline; }
   function focus(id) { const el = $(id); if (el) el.focus({ preventScroll: true }); }
 
   function tierSig(now) {
-    return [...S.items.values()].map((it) => it.id + ":" + tierOf(it, now).tier).join("|");
+    return [...src().items.values()].map((it) => it.id + ":" + tierOf(it, now).tier).join("|");
   }
   function tick() {
     const now = Date.now();
     if (tierSig(now) !== S.tiers) return render();
     document.querySelectorAll("[data-rel]").forEach((el) => { el.textContent = relText(el.dataset.rel, Number(el.dataset.ms), now); });
   }
+  const secondsLeft = (until) => Math.max(1, Math.ceil((until - Date.now()) / 1000));
+  let countdown = 0;
+  function startCountdown() {
+    if (countdown) return;
+    countdown = setInterval(() => {
+      document.querySelectorAll("[data-until]").forEach((el) => { el.textContent = t("sendIn", { n: secondsLeft(Number(el.dataset.until)) }); });
+      if (!S.pending.size) { clearInterval(countdown); countdown = 0; }
+    }, 1000);
+  }
 
-  /* ===== 9. Answering ===== */
+  /* ===== 9. Answering. A tap waits SETTINGS.undoSeconds before it is written, so Undo never races an agent. ===== */
   function onPick(it, o) {
-    if (guarded() || S.readOnly) return;
-    if (it.stakes.length) {
+    if (S.readOnly) return;
+    if (it.marked) {
       if (!(S.confirm && S.confirm.id === it.id && S.confirm.key === o.key)) {
         S.confirm = { id: it.id, key: o.key };
         S.panel = null;
-        guard(500);
         render();
-        focus("confirm-" + it.id);
+        focus("cancel-" + it.id);
       }
       return;
     }
-    submit(it, { kind: "choose", key: o.key });
+    answer(it, { kind: "choose", key: o.key });
   }
 
-  function nextTitleAfter(id) {
-    const cards = [...document.querySelectorAll("#app > article.card")];
-    const i = cards.findIndex((c) => c.id === "card-" + id);
-    const next = i >= 0 ? cards[i + 1] || cards[i - 1] : null;
-    return next ? next.id.replace(/^card-/, "t-") : "mine-h";
-  }
-
-  async function submit(it, part, opts = {}) {
-    if (S.readOnly || S.busy.has(it.id)) return false;
-    const prev = S.answers.get(it.id) || null;
-    const answer = { v: 1, item_id: it.id, item_rev: it.rev, kind: part.kind, answered_at: new Date().toISOString(), answered_by: S.userId || null, via: opts.via || "card" };
-    if (part.key) answer.key = part.key;
-    if (part.note) answer.note = part.note;
-    if (part.kind === "reassign") answer.reassign_to = part.reassign_to || null;
-    const nextFocus = opts.quiet ? null : nextTitleAfter(it.id);
-    S.busy.add(it.id);
+  function answer(it, part) {
+    if (S.readOnly || S.sending.has(it.id)) return;
+    const prev = S.pending.get(it.id);
+    if (prev) clearTimeout(prev.timer);
+    const a = { v: 1, item_id: it.id, item_rev: it.rev, kind: part.kind, answered_at: null, answered_by: S.userId || null };
+    if (part.key) a.key = part.key;
+    if (part.note) a.note = part.note;
+    if (part.kind === "reassign") a.reassign_to = part.reassign_to || null;
+    const until = Date.now() + SETTINGS.undoSeconds * 1000;
+    S.pending.set(it.id, { answer: a, until, timer: setTimeout(() => commit(it.id), SETTINGS.undoSeconds * 1000), view: S.view });
+    S.reopen.delete(it.id);
     S.confirm = null;
     S.panel = null;
-    S.answers.set(it.id, answer);
-    guard(600);
+    startCountdown();
     render();
-    if (nextFocus) focus(nextFocus);
+    focus("rowbtn-" + it.id);
+  }
+
+  function takeBack(id) {
+    const p = S.pending.get(id);
+    if (!p) return;
+    clearTimeout(p.timer);
+    S.pending.delete(id);
+    render();
+    focus("t-" + id);
+  }
+
+  async function commit(id) {
+    const p = S.pending.get(id);
+    if (!p) return;
+    clearTimeout(p.timer);
+    const source = p.view === "demo" ? data.demo : data.live;
+    const answer = { ...p.answer, answered_at: new Date().toISOString() };
+    S.sending.add(id);
+    render();
     try {
-      await store.writeAnswer(it.id, answer);
-      S.drafts.delete(it.id); S.rdrafts.delete(it.id); S.pick.delete(it.id); S.to.delete(it.id);
-      if (!opts.quiet) toast(answerText(answer, it, true), () => undo([{ id: it.id, prev }]));
-      return true;
+      await source.store.writeAnswer(id, answer);
+      source.answers.set(id, answer);
+      S.pending.delete(id);
+      S.recent.add(id);
+      S.drafts.delete(id); S.rdrafts.delete(id); S.pick.delete(id); S.to.delete(id);
     } catch (e) {
-      if (prev) S.answers.set(it.id, prev); else S.answers.delete(it.id);
+      S.pending.delete(id);
       failed(e);
-      return false;
     } finally {
-      S.busy.delete(it.id);
+      S.sending.delete(id);
       render();
+      if (document.activeElement === document.body) focus("rowbtn-" + id);
     }
   }
-
-  async function submitBatch(list) {
-    S.batchOpen = false;
-    S.batchSkip.clear();
-    const done = [];
-    for (const v of list) {
-      const prev = S.answers.get(v.it.id) || null;
-      if (await submit(v.it, { kind: "choose", key: v.it.recommend.key }, { via: "batch", quiet: true })) done.push({ id: v.it.id, prev });
-      else break;
-    }
-    if (done.length) toast(t("toastBatch", { n: done.length }), () => undo(done));
-    focus("mine-h");
-  }
-
-  async function undo(entries) {
-    for (const { id, prev } of entries) {
-      S.busy.add(id);
-      try {
-        if (prev) { await store.writeAnswer(id, prev); S.answers.set(id, prev); }
-        else { await store.deleteAnswer(id); S.answers.delete(id); }
-      } catch (e) {
-        failed(e);
-        return;
-      } finally {
-        S.busy.delete(id);
-      }
-    }
-    render();
-    toast(t("toastUndone"));
-    if (entries.length === 1) focus("t-" + entries[0].id);
-  }
+  // Leaving the page (or the phone locking it) sends what is waiting instead of dropping it.
+  function flushAll() { for (const id of [...S.pending.keys()]) commit(id); }
 
   function failed(e) {
     const code = e && e.code;
@@ -1499,44 +1630,37 @@ a.ev:hover { text-decoration: underline; }
     else if (code === "quota_exceeded") toast(t("quota"));
     else if (code === "revoked") { S.fatal = t("revoked"); S.readOnly = true; }
     else toast(t("writeFail"));
-    render();
   }
 
   let toastTimer = 0;
-  function toast(message, onUndo) {
+  function toast(message) {
     const box = $("toast");
-    const btn = $("toast-undo");
-    $("toast-msg").textContent = message;
-    btn.textContent = t("undo");
-    btn.hidden = !onUndo;
-    btn.onclick = onUndo ? () => { hideToast(); onUndo(); } : null;
+    box.textContent = message;
     box.hidden = false;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(hideToast, SETTINGS.undoSeconds * 1000);
+    toastTimer = setTimeout(() => { box.hidden = true; }, 6000);
   }
-  function hideToast() { $("toast").hidden = true; $("toast-undo").onclick = null; }
 
   /* ===== 10. Start ===== */
-  function onItems(list) {
-    S.items = new Map(list.map(normalize).filter((it) => it.id).map((it) => [it.id, it]));
-    S.loaded = true;
-    render();
-  }
-  function onAnswers(list) {
-    S.answers = new Map(list.filter((a) => a && str(a.item_id)).map((a) => [str(a.item_id), a]));
-    render();
-  }
-  function onConfig(c) {
-    S.config = c && typeof c === "object" ? c : { v: 1 };
-    setLocale(str(S.config.locale) || SETTINGS.locale);
-    render();
+  function applyConfig() {
+    const cfg = src().config;
+    setLocale((cfg && str(cfg.locale)) || SETTINGS.locale);
   }
   function onError(e) {
     const code = e && e.code;
     S.fatal = code === "revoked" ? t("revoked") : t("loadFail");
     if (code === "revoked") S.readOnly = true;
-    S.loaded = true;
+    if (data.live) data.live.loaded = true;
     render();
+  }
+  function showDemo(on) {
+    if (on && !data.demo) data.demo = demoSource();
+    S.view = on ? "demo" : "live";
+    S.panel = null; S.confirm = null;
+    applyConfig();
+    render();
+    window.scrollTo(0, 0);
+    focus(on ? "back-live" : "mine-h");
   }
 
   async function boot(saved) {
@@ -1544,30 +1668,44 @@ a.ev:hover { text-decoration: underline; }
     if (saved && Array.isArray(saved.open)) S.open = new Set(saved.open);
     setLocale(SETTINGS.locale);
     render();
-    let db = null;
-    let user = null;
     const host = window.claude;
-    if (host && typeof host.use === "function") {
-      try { [db, user] = await Promise.all([host.use("db"), host.use("user")]); } catch (_) { db = null; }
-    }
-    if (db) {
-      S.mode = "live";
-      store = liveStore(db);
-      if (user) {
-        try { S.userId = await user.id(); } catch (_) {}
-        try { if ((await user.can("data.write")) === false) S.readOnly = true; } catch (_) {}
-      }
-    } else {
+    const inClaude = !!(host && typeof host.use === "function");
+    if (SETTINGS.mode === "demo" || (SETTINGS.mode === "auto" && !inClaude)) {
       S.mode = "demo";
-      store = demoStore();
+      S.view = "demo";
+      data.demo = demoSource();
+      applyConfig();
+      render();
+    } else {
+      let db = null;
+      let user = null;
+      if (inClaude) {
+        try { [db, user] = await Promise.all([host.use("db"), host.use("user")]); } catch (_) { db = null; }
+      }
+      if (!db) {
+        S.mode = "offline";          // never fall back to made-up items on a live inbox
+        render();
+      } else {
+        if (user) {
+          try { S.isOwner = !!(await user.isOwner()); } catch (_) {}
+          try { S.userId = await user.id(); } catch (_) {}
+          try { if ((await user.can("data.write")) === false) S.readOnly = true; } catch (_) {}
+        }
+        S.mode = "live";
+        data.live = liveSource(db);
+        data.live.start();
+        render();
+      }
     }
-    store.start({ onItems, onAnswers, onConfig, onError });
     setInterval(() => { if (!document.hidden) tick(); }, 30000);
-    document.addEventListener("visibilitychange", () => { if (!document.hidden) tick(); });
+    document.addEventListener("visibilitychange", () => { if (document.hidden) flushAll(); else tick(); });
+    window.addEventListener("pagehide", flushAll);
   }
 
   const hot = window.claude && window.claude.hot;
-  try { if (hot && typeof hot.snapshot === "function") hot.snapshot(() => ({ drafts: [...S.drafts], open: [...S.open] })); } catch (_) {}
+  try {
+    if (hot && typeof hot.snapshot === "function") hot.snapshot(() => { flushAll(); return { drafts: [...S.drafts], open: [...S.open] }; });
+  } catch (_) {}
   if (hot && typeof hot.ready === "function") hot.ready(boot);
   else boot((hot && hot.data) || {});
 })();

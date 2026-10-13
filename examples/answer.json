@@ -1,11 +1,10 @@
 {
   "v": 1,
-  "item_id": "db-migration-tonight",
+  "item_id": "infra-agent-20261012-db-migration",
   "item_rev": 1,
   "kind": "choose",
   "key": "A",
   "note": "Fine after 23:30 too.",
   "answered_at": "2026-10-14T08:02:11.000Z",
-  "answered_by": "u_0123456789abcdefghijkl",
-  "via": "card"
+  "answered_by": "u_0123456789abcdefghijkl"
 }

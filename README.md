@@ -3,8 +3,10 @@
 A one-page inbox where one person clears the decisions, approvals and questions that a fleet of AI agents has queued. It runs as a [claude.ai](https://claude.ai) Artifact: agents write items into the artifact's shared store, the page shows each one as a card, and every answer goes back into the same store as structured JSON that the agent reads.
 
 <p>
-  <img src="docs/screenshots/phone-light.png" alt="Phone view: a one-line summary, then your own decisions as cards with the recommended option first" width="300">
-  <img src="docs/screenshots/phone-dark.png" alt="Dark mode: an item marked irreversible asks for a second tap and restates what the choice does" width="300">
+  <img src="docs/screenshots/phone-light.png" alt="Phone view: a one-line summary, then your own decisions as cards with the recommended option first" width="240">
+  <img src="docs/screenshots/phone-dark.png" alt="Dark mode: an item marked irreversible asks for a second tap and restates what the choice does" width="240">
+  <img src="docs/screenshots/phone-sending.png" alt="After a tap: the card becomes one row with Undo and a countdown before the answer is sent" width="240">
+  <img src="docs/screenshots/phone-settled.png" alt="Settled: sent answers show whether the agent has picked them up, is working on them, or is done" width="240">
 </p>
 
 > **日本語の概要** — AI エージェントがためた「判断待ち」（決めてほしいこと・承認・質問）を、1人がスマホで片づけるためのページのテンプレートです。1件1カードで、何が止まっているか、選択肢とその結果、おすすめと理由、待ち時間、「取り消せない・外部に出る・お金がかかる」の印を並べます。ほとんどの項目は1タップで返せて、回答はエージェントが読める JSON として保存されます。エージェントが受け取ったかどうかも画面に出ます。文言は日本語と英語があり、ほかの言語も足せます。

@@ -29,6 +29,12 @@
   --stake-fg: #FFFFFF;
   --focus: #2346C8;
   --shadow: 0 10px 28px rgb(16 22 34 / 0.22);
+  /* The picture viewer stays dark in both themes, like a photo app. */
+  --viewer-bg: #0A0C11;
+  --viewer-fg: #F3F5F9;
+  --viewer-muted: #B4BCCB;
+  --viewer-line: #6B7487;
+  --viewer-ink: #0B0E14;
 
   --font-ui: "BIZ UDPGothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", Meiryo, system-ui, sans-serif;
   --font-mono: "Spline Sans Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -77,7 +83,7 @@ body {
 }
 button, input, textarea, select { font-family: inherit; }
 /* Japanese: break lines between phrases, not inside them (Chromium; others fall back to normal). */
-.card-title, .row-t, .summary, .opt .lbl, .rc-t, .sec-h { word-break: auto-phrase; }
+.card-title, .row-t, .summary, .opt .lbl, .rc-t, .sec-h, .shot figcaption, .viewer-cap { word-break: auto-phrase; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .ic { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
@@ -135,6 +141,9 @@ button, input, textarea, select { font-family: inherit; }
 .pill .ic { width: 13px; height: 13px; }
 .stake { display: inline-flex; align-items: center; gap: 4px; padding: 5px 8px 5px 6px; border-radius: 6px; background: var(--stake-bg); color: var(--stake-fg); font-size: var(--fs-xs); font-weight: 700; line-height: 1.2; white-space: nowrap; }
 .stake .ic { width: 13px; height: 13px; }
+/* Team label: which team's issue this is, first thing on every card, row and receipt. */
+.team { display: inline-flex; align-items: center; max-width: 100%; padding: 4px 9px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); font-size: var(--fs-xs); font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rc-main > .team { justify-self: start; margin-bottom: 2px; }
 
 /* Options */
 .opts { display: grid; gap: 8px; }
@@ -204,6 +213,33 @@ textarea.field { resize: vertical; min-height: 84px; }
 .ev { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; box-sizing: border-box; padding: 4px 10px; border-radius: 999px; background: var(--chip); color: var(--ink); font-size: var(--fs-xs); font-weight: 700; text-decoration: none; overflow-wrap: anywhere; }
 a.ev:hover { text-decoration: underline; }
 .ev .ic { width: 12px; height: 12px; }
+
+/* Pictures on the card: an odd count lets the first one span the width */
+.shots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 8px; }
+.shots.is-odd > .shot:first-child { grid-column: 1 / -1; }
+.shot { margin: 0; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.shot-btn { all: unset; box-sizing: border-box; display: block; width: 100%; max-width: 100%; aspect-ratio: 4 / 3; border-radius: 8px; overflow: hidden; cursor: zoom-in; background: var(--surface-2); border: 1px solid var(--line); }
+.shot-btn:hover { border-color: var(--line-strong); }
+.shot-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.shot-btn img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.shot-miss { box-sizing: border-box; display: grid; place-items: center; width: 100%; max-width: 100%; aspect-ratio: 4 / 3; padding: 12px; border-radius: 8px; border: 1px dashed var(--line-strong); background: var(--surface-2); color: var(--muted); font-size: var(--fs-xs); line-height: 1.5; text-align: center; overflow-wrap: anywhere; }
+.shot figcaption { font-size: var(--fs-xs); color: var(--muted); line-height: 1.5; overflow-wrap: anywhere; }
+
+/* Picture viewer: full screen over the page; Close or Escape returns to the card */
+html.is-viewing, html.is-viewing body { overflow: hidden; }
+.viewer { position: fixed; inset: 0; z-index: 20; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; background: var(--viewer-bg); color: var(--viewer-fg);
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
+.viewer :focus-visible { outline-color: var(--viewer-fg); }
+.viewer-bar { display: flex; align-items: center; gap: 12px; padding-block: 8px; padding-inline: 16px 8px; }
+.viewer-cap { flex: 1; min-width: 0; margin: 0; font-size: var(--fs-s); font-weight: 700; line-height: 1.5; overflow-wrap: anywhere; }
+.viewer-n { font-family: var(--font-mono); font-size: var(--fs-s); color: var(--viewer-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.viewer-stage { min-height: 0; overflow: auto; display: flex; overscroll-behavior: contain; }
+.viewer-stage img { flex: none; margin: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
+.viewer-stage.is-actual img { max-width: none; max-height: none; }
+.viewer-miss { margin: auto; padding: 16px; font-size: var(--fs-s); color: var(--viewer-muted); text-align: center; }
+.viewer-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding-block: 8px 12px; padding-inline: 16px; }
+.viewer .btn { background: transparent; border-color: var(--viewer-line); color: var(--viewer-fg); }
+.viewer .btn[aria-pressed="true"] { background: var(--viewer-fg); border-color: var(--viewer-fg); color: var(--viewer-ink); }
 
 /* Rows for other owners */
 .row { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-ctl); }
@@ -300,10 +336,23 @@ a.ev:hover { text-decoration: underline; }
 <main class="wrap" id="app"></main>
 <div class="sr" id="live" role="status" aria-live="polite"></div>
 <div class="toast" id="toast" role="alert" hidden><span class="toast-msg" id="toast-msg"></span><button type="button" class="btn" id="toast-close"></button></div>
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="viewer-cap" hidden>
+  <div class="viewer-bar"><p class="viewer-cap" id="viewer-cap" aria-live="polite"></p><span class="viewer-n" id="viewer-n"></span><button type="button" class="btn" id="viewer-close"></button></div>
+  <div class="viewer-stage" id="viewer-stage"><img id="viewer-img" alt=""><p class="viewer-miss" id="viewer-miss" hidden></p></div>
+  <div class="viewer-tools"><button type="button" class="btn" id="viewer-prev"></button><button type="button" class="btn" id="viewer-zoom" aria-pressed="false"></button><button type="button" class="btn" id="viewer-next"></button></div>
+</div>
 
 <script type="application/json" id="demo-data">
 {
   "anchor": "2026-10-14T09:00:00+09:00",
+  "assets": {
+    "0000000000000000000000000000de11": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMjQwJyB3aWR0aD0nNjQwJyBoZWlnaHQ9JzQ4MCcgZm9udC1mYW1pbHk9J3N5c3RlbS11aSwgc2Fucy1zZXJpZic+PHJlY3Qgd2lkdGg9JzMyMCcgaGVpZ2h0PScyNDAnIGZpbGw9JyNGNEY2RjknLz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzQwJyBmaWxsPScjRkZGRkZGJy8+PHRleHQgeD0nMTYnIHk9JzI2JyBmb250LXNpemU9JzE1JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUIyMjMwJz7oqK3lrpo8L3RleHQ+PHJlY3QgeT0nNDAnIHdpZHRoPSczMjAnIGhlaWdodD0nMScgZmlsbD0nI0RERTJFQScvPjxyZWN0IHg9JzEyJyB5PSc1Nicgd2lkdGg9JzI5NicgaGVpZ2h0PSc1Micgcng9JzEwJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyNEREUyRUEnLz48dGV4dCB4PScyNicgeT0nODcnIGZvbnQtc2l6ZT0nMTMnIGZpbGw9JyMxQjIyMzAnPumAmuefpTwvdGV4dD48cmVjdCB4PScyMTQnIHk9JzY4JyB3aWR0aD0nODAnIGhlaWdodD0nMjgnIHJ4PSc3JyBmaWxsPScjMkY1QkVBJyBzdHJva2U9JyMyRjVCRUEnLz48dGV4dCB4PScyNTQnIHk9Jzg3JyBmb250LXNpemU9JzEyLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNGRkZGRkYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPuS/neWtmDwvdGV4dD48cmVjdCB4PScxMicgeT0nMTE4JyB3aWR0aD0nMjk2JyBoZWlnaHQ9JzUyJyByeD0nMTAnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nI0RERTJFQScvPjx0ZXh0IHg9JzI2JyB5PScxNDknIGZvbnQtc2l6ZT0nMTMnIGZpbGw9JyMxQjIyMzAnPuihqOekujwvdGV4dD48cmVjdCB4PScyMTQnIHk9JzEzMCcgd2lkdGg9JzgwJyBoZWlnaHQ9JzI4JyByeD0nNycgZmlsbD0nIzJGNUJFQScgc3Ryb2tlPScjMkY1QkVBJy8+PHRleHQgeD0nMjU0JyB5PScxNDknIGZvbnQtc2l6ZT0nMTIuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0ZGRkZGRicgdGV4dC1hbmNob3I9J21pZGRsZSc+5L+d5a2YPC90ZXh0PjxyZWN0IHg9JzEyJyB5PScxODAnIHdpZHRoPScyOTYnIGhlaWdodD0nNTInIHJ4PScxMCcgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjRERFMkVBJy8+PHRleHQgeD0nMjYnIHk9JzIxMScgZm9udC1zaXplPScxMycgZmlsbD0nIzFCMjIzMCc+44Ki44Kr44Km44Oz44OIPC90ZXh0PjxyZWN0IHg9JzIxNCcgeT0nMTkyJyB3aWR0aD0nODAnIGhlaWdodD0nMjgnIHJ4PSc3JyBmaWxsPScjMkY1QkVBJyBzdHJva2U9JyMyRjVCRUEnLz48dGV4dCB4PScyNTQnIHk9JzIxMScgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjRkZGRkZGJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz7kv53lrZg8L3RleHQ+PC9zdmc+",
+    "0000000000000000000000000000de12": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMjQwJyB3aWR0aD0nNjQwJyBoZWlnaHQ9JzQ4MCcgZm9udC1mYW1pbHk9J3N5c3RlbS11aSwgc2Fucy1zZXJpZic+PHJlY3Qgd2lkdGg9JzMyMCcgaGVpZ2h0PScyNDAnIGZpbGw9JyNGNEY2RjknLz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzQwJyBmaWxsPScjRkZGRkZGJy8+PHRleHQgeD0nMTYnIHk9JzI2JyBmb250LXNpemU9JzE1JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUIyMjMwJz7oqK3lrpo8L3RleHQ+PHJlY3QgeT0nNDAnIHdpZHRoPSczMjAnIGhlaWdodD0nMScgZmlsbD0nI0RERTJFQScvPjxyZWN0IHg9JzEyJyB5PSc1Nicgd2lkdGg9JzI5NicgaGVpZ2h0PSc1Micgcng9JzEwJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyNEREUyRUEnLz48dGV4dCB4PScyNicgeT0nODcnIGZvbnQtc2l6ZT0nMTMnIGZpbGw9JyMxQjIyMzAnPumAmuefpTwvdGV4dD48cmVjdCB4PScyMTQnIHk9JzY4JyB3aWR0aD0nODAnIGhlaWdodD0nMjgnIHJ4PSc3JyBmaWxsPScjMkY1QkVBJyBzdHJva2U9JyMyRjVCRUEnLz48dGV4dCB4PScyNTQnIHk9Jzg3JyBmb250LXNpemU9JzEyLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNGRkZGRkYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPuS/neWtmDwvdGV4dD48cmVjdCB4PScxMicgeT0nMTE4JyB3aWR0aD0nMjk2JyBoZWlnaHQ9JzUyJyByeD0nMTAnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nI0RERTJFQScvPjx0ZXh0IHg9JzI2JyB5PScxNDknIGZvbnQtc2l6ZT0nMTMnIGZpbGw9JyMxQjIyMzAnPuihqOekujwvdGV4dD48cmVjdCB4PScyMTQnIHk9JzEzMCcgd2lkdGg9JzgwJyBoZWlnaHQ9JzI4JyByeD0nNycgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjOUFBM0IyJy8+PHRleHQgeD0nMjU0JyB5PScxNDknIGZvbnQtc2l6ZT0nMTIuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzVFNjg3OScgdGV4dC1hbmNob3I9J21pZGRsZSc+5pu05pawPC90ZXh0PjxyZWN0IHg9JzEyJyB5PScxODAnIHdpZHRoPScyOTYnIGhlaWdodD0nNTInIHJ4PScxMCcgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjRERFMkVBJy8+PHRleHQgeD0nMjYnIHk9JzIxMScgZm9udC1zaXplPScxMycgZmlsbD0nIzFCMjIzMCc+44Ki44Kr44Km44Oz44OIPC90ZXh0PjxyZWN0IHg9JzIxNCcgeT0nMTkyJyB3aWR0aD0nODAnIGhlaWdodD0nMjgnIHJ4PSc3JyBmaWxsPScjMUU4RTVBJyBzdHJva2U9JyMxRThFNUEnLz48dGV4dCB4PScyNTQnIHk9JzIxMScgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjRkZGRkZGJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz7pgannlKg8L3RleHQ+PC9zdmc+",
+    "0000000000000000000000000000de13": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMjQwJyB3aWR0aD0nNjQwJyBoZWlnaHQ9JzQ4MCcgZm9udC1mYW1pbHk9J3N5c3RlbS11aSwgc2Fucy1zZXJpZic+PHJlY3Qgd2lkdGg9JzMyMCcgaGVpZ2h0PScyNDAnIGZpbGw9JyNGNEY2RjknLz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzQwJyBmaWxsPScjRkZGRkZGJy8+PHRleHQgeD0nMTYnIHk9JzI2JyBmb250LXNpemU9JzE1JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUIyMjMwJz7lj5fkv6Hjg4jjg6zjgqQ8L3RleHQ+PHJlY3QgeT0nNDAnIHdpZHRoPSczMjAnIGhlaWdodD0nMScgZmlsbD0nI0RERTJFQScvPjxyZWN0IHg9JzEyJyB5PSc1NCcgd2lkdGg9JzI5NicgaGVpZ2h0PSc3OCcgcng9JzEwJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyMyRjVCRUEnIHN0cm9rZS13aWR0aD0nMS41Jy8+PGNpcmNsZSBjeD0nMzQnIGN5PSc3OCcgcj0nMTAnIGZpbGw9JyNDOUQzRjUnLz48dGV4dCB4PSc1MicgeT0nODInIGZvbnQtc2l6ZT0nMTEuNScgZmlsbD0nIzVFNjg3OSc+44GK55+l44KJ44GbPC90ZXh0Pjx0ZXh0IHg9JzI2JyB5PScxMDYnIGZvbnQtc2l6ZT0nMTQnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQjIyMzAnPuaWsOapn+iDveOBjOWujOWFqOeEoeaWmeOBp+S9v+OBiOOBvuOBmTwvdGV4dD48dGV4dCB4PScyNicgeT0nMTI0JyBmb250LXNpemU9JzExLjUnIGZpbGw9JyM1RTY4NzknPjEw5pyI44Gu44Ki44OD44OX44OH44O844OI44KS44GU57S55LuL44GX44G+44GZ4oCmPC90ZXh0PjxyZWN0IHg9JzEyJyB5PScxNDYnIHdpZHRoPScyOTYnIGhlaWdodD0nMzgnIHJ4PScxMCcgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjRERFMkVBJy8+PHJlY3QgeD0nMjYnIHk9JzE1Nycgd2lkdGg9JzEyMCcgaGVpZ2h0PSc3JyByeD0nMy41JyBmaWxsPScjRERFMkVBJy8+PHJlY3QgeD0nMjYnIHk9JzE2OScgd2lkdGg9JzIwMCcgaGVpZ2h0PSc2JyByeD0nMycgZmlsbD0nI0RERTJFQScvPjxyZWN0IHg9JzEyJyB5PScxOTInIHdpZHRoPScyOTYnIGhlaWdodD0nMzgnIHJ4PScxMCcgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjRERFMkVBJy8+PHJlY3QgeD0nMjYnIHk9JzIwMycgd2lkdGg9JzEyMCcgaGVpZ2h0PSc3JyByeD0nMy41JyBmaWxsPScjRERFMkVBJy8+PHJlY3QgeD0nMjYnIHk9JzIxNScgd2lkdGg9JzIwMCcgaGVpZ2h0PSc2JyByeD0nMycgZmlsbD0nI0RERTJFQScvPjwvc3ZnPg==",
+    "0000000000000000000000000000de21": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMjQwJyB3aWR0aD0nNjQwJyBoZWlnaHQ9JzQ4MCcgZm9udC1mYW1pbHk9J3N5c3RlbS11aSwgc2Fucy1zZXJpZic+PHJlY3Qgd2lkdGg9JzMyMCcgaGVpZ2h0PScyNDAnIGZpbGw9JyNGNEY2RjknLz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzQwJyBmaWxsPScjRkZGRkZGJy8+PHRleHQgeD0nMTYnIHk9JzI2JyBmb250LXNpemU9JzE1JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUIyMjMwJz5TZXR0aW5nczwvdGV4dD48cmVjdCB5PSc0MCcgd2lkdGg9JzMyMCcgaGVpZ2h0PScxJyBmaWxsPScjRERFMkVBJy8+PHJlY3QgeD0nMTInIHk9JzU2JyB3aWR0aD0nMjk2JyBoZWlnaHQ9JzUyJyByeD0nMTAnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nI0RERTJFQScvPjx0ZXh0IHg9JzI2JyB5PSc4NycgZm9udC1zaXplPScxMycgZmlsbD0nIzFCMjIzMCc+Tm90aWZpY2F0aW9uczwvdGV4dD48cmVjdCB4PScyMTQnIHk9JzY4JyB3aWR0aD0nODAnIGhlaWdodD0nMjgnIHJ4PSc3JyBmaWxsPScjMkY1QkVBJyBzdHJva2U9JyMyRjVCRUEnLz48dGV4dCB4PScyNTQnIHk9Jzg3JyBmb250LXNpemU9JzEyLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNGRkZGRkYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlNhdmU8L3RleHQ+PHJlY3QgeD0nMTInIHk9JzExOCcgd2lkdGg9JzI5NicgaGVpZ2h0PSc1Micgcng9JzEwJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyNEREUyRUEnLz48dGV4dCB4PScyNicgeT0nMTQ5JyBmb250LXNpemU9JzEzJyBmaWxsPScjMUIyMjMwJz5EaXNwbGF5PC90ZXh0PjxyZWN0IHg9JzIxNCcgeT0nMTMwJyB3aWR0aD0nODAnIGhlaWdodD0nMjgnIHJ4PSc3JyBmaWxsPScjMkY1QkVBJyBzdHJva2U9JyMyRjVCRUEnLz48dGV4dCB4PScyNTQnIHk9JzE0OScgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjRkZGRkZGJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5TYXZlPC90ZXh0PjxyZWN0IHg9JzEyJyB5PScxODAnIHdpZHRoPScyOTYnIGhlaWdodD0nNTInIHJ4PScxMCcgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjRERFMkVBJy8+PHRleHQgeD0nMjYnIHk9JzIxMScgZm9udC1zaXplPScxMycgZmlsbD0nIzFCMjIzMCc+QWNjb3VudDwvdGV4dD48cmVjdCB4PScyMTQnIHk9JzE5Micgd2lkdGg9JzgwJyBoZWlnaHQ9JzI4JyByeD0nNycgZmlsbD0nIzJGNUJFQScgc3Ryb2tlPScjMkY1QkVBJy8+PHRleHQgeD0nMjU0JyB5PScyMTEnIGZvbnQtc2l6ZT0nMTIuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0ZGRkZGRicgdGV4dC1hbmNob3I9J21pZGRsZSc+U2F2ZTwvdGV4dD48L3N2Zz4=",
+    "0000000000000000000000000000de22": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMjQwJyB3aWR0aD0nNjQwJyBoZWlnaHQ9JzQ4MCcgZm9udC1mYW1pbHk9J3N5c3RlbS11aSwgc2Fucy1zZXJpZic+PHJlY3Qgd2lkdGg9JzMyMCcgaGVpZ2h0PScyNDAnIGZpbGw9JyNGNEY2RjknLz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzQwJyBmaWxsPScjRkZGRkZGJy8+PHRleHQgeD0nMTYnIHk9JzI2JyBmb250LXNpemU9JzE1JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUIyMjMwJz5TZXR0aW5nczwvdGV4dD48cmVjdCB5PSc0MCcgd2lkdGg9JzMyMCcgaGVpZ2h0PScxJyBmaWxsPScjRERFMkVBJy8+PHJlY3QgeD0nMTInIHk9JzU2JyB3aWR0aD0nMjk2JyBoZWlnaHQ9JzUyJyByeD0nMTAnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nI0RERTJFQScvPjx0ZXh0IHg9JzI2JyB5PSc4NycgZm9udC1zaXplPScxMycgZmlsbD0nIzFCMjIzMCc+Tm90aWZpY2F0aW9uczwvdGV4dD48cmVjdCB4PScyMTQnIHk9JzY4JyB3aWR0aD0nODAnIGhlaWdodD0nMjgnIHJ4PSc3JyBmaWxsPScjMkY1QkVBJyBzdHJva2U9JyMyRjVCRUEnLz48dGV4dCB4PScyNTQnIHk9Jzg3JyBmb250LXNpemU9JzEyLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNGRkZGRkYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlNhdmU8L3RleHQ+PHJlY3QgeD0nMTInIHk9JzExOCcgd2lkdGg9JzI5NicgaGVpZ2h0PSc1Micgcng9JzEwJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyNEREUyRUEnLz48dGV4dCB4PScyNicgeT0nMTQ5JyBmb250LXNpemU9JzEzJyBmaWxsPScjMUIyMjMwJz5EaXNwbGF5PC90ZXh0PjxyZWN0IHg9JzIxNCcgeT0nMTMwJyB3aWR0aD0nODAnIGhlaWdodD0nMjgnIHJ4PSc3JyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyM5QUEzQjInLz48dGV4dCB4PScyNTQnIHk9JzE0OScgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjNUU2ODc5JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5VcGRhdGU8L3RleHQ+PHJlY3QgeD0nMTInIHk9JzE4MCcgd2lkdGg9JzI5NicgaGVpZ2h0PSc1Micgcng9JzEwJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyNEREUyRUEnLz48dGV4dCB4PScyNicgeT0nMjExJyBmb250LXNpemU9JzEzJyBmaWxsPScjMUIyMjMwJz5BY2NvdW50PC90ZXh0PjxyZWN0IHg9JzIxNCcgeT0nMTkyJyB3aWR0aD0nODAnIGhlaWdodD0nMjgnIHJ4PSc3JyBmaWxsPScjMUU4RTVBJyBzdHJva2U9JyMxRThFNUEnLz48dGV4dCB4PScyNTQnIHk9JzIxMScgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjRkZGRkZGJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5BcHBseTwvdGV4dD48L3N2Zz4=",
+    "0000000000000000000000000000de23": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMjAgMjQwJyB3aWR0aD0nNjQwJyBoZWlnaHQ9JzQ4MCcgZm9udC1mYW1pbHk9J3N5c3RlbS11aSwgc2Fucy1zZXJpZic+PHJlY3Qgd2lkdGg9JzMyMCcgaGVpZ2h0PScyNDAnIGZpbGw9JyNGNEY2RjknLz48cmVjdCB3aWR0aD0nMzIwJyBoZWlnaHQ9JzQwJyBmaWxsPScjRkZGRkZGJy8+PHRleHQgeD0nMTYnIHk9JzI2JyBmb250LXNpemU9JzE1JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUIyMjMwJz5JbmJveDwvdGV4dD48cmVjdCB5PSc0MCcgd2lkdGg9JzMyMCcgaGVpZ2h0PScxJyBmaWxsPScjRERFMkVBJy8+PHJlY3QgeD0nMTInIHk9JzU0JyB3aWR0aD0nMjk2JyBoZWlnaHQ9Jzc4JyByeD0nMTAnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nIzJGNUJFQScgc3Ryb2tlLXdpZHRoPScxLjUnLz48Y2lyY2xlIGN4PSczNCcgY3k9Jzc4JyByPScxMCcgZmlsbD0nI0M5RDNGNScvPjx0ZXh0IHg9JzUyJyB5PSc4MicgZm9udC1zaXplPScxMS41JyBmaWxsPScjNUU2ODc5Jz5OZXdzPC90ZXh0Pjx0ZXh0IHg9JzI2JyB5PScxMDYnIGZvbnQtc2l6ZT0nMTQnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQjIyMzAnPk5ldyBmZWF0dXJlcywgdG90YWxseSBmcmVlPC90ZXh0Pjx0ZXh0IHg9JzI2JyB5PScxMjQnIGZvbnQtc2l6ZT0nMTEuNScgZmlsbD0nIzVFNjg3OSc+SGVyZSBpcyB3aGF0IGNoYW5nZWQgaW4gT2N0b2JlcuKApjwvdGV4dD48cmVjdCB4PScxMicgeT0nMTQ2JyB3aWR0aD0nMjk2JyBoZWlnaHQ9JzM4JyByeD0nMTAnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nI0RERTJFQScvPjxyZWN0IHg9JzI2JyB5PScxNTcnIHdpZHRoPScxMjAnIGhlaWdodD0nNycgcng9JzMuNScgZmlsbD0nI0RERTJFQScvPjxyZWN0IHg9JzI2JyB5PScxNjknIHdpZHRoPScyMDAnIGhlaWdodD0nNicgcng9JzMnIGZpbGw9JyNEREUyRUEnLz48cmVjdCB4PScxMicgeT0nMTkyJyB3aWR0aD0nMjk2JyBoZWlnaHQ9JzM4JyByeD0nMTAnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nI0RERTJFQScvPjxyZWN0IHg9JzI2JyB5PScyMDMnIHdpZHRoPScxMjAnIGhlaWdodD0nNycgcng9JzMuNScgZmlsbD0nI0RERTJFQScvPjxyZWN0IHg9JzI2JyB5PScyMTUnIHdpZHRoPScyMDAnIGhlaWdodD0nNicgcng9JzMnIGZpbGw9JyNEREUyRUEnLz48L3N2Zz4="
+  },
   "config": {
     "ja": { "v": 1, "self": "lead", "owners": [
       { "key": "lead", "label": "プロダクトリード" },
@@ -341,6 +390,8 @@ a.ev:hover { text-decoration: underline; }
           { "key": "B", "label": "件名を直してから送る", "consequence": "配信が1時間ほど遅れる。" },
           { "key": "C", "label": "今月は送らない", "consequence": "新機能の告知が来月にずれる。" } ],
         "recommend": { "key": "B", "reason": "件名の「完全無料」は迷惑メールと判定されやすい。" },
+        "images": [
+          {"asset_id": "0000000000000000000000000000de13", "caption": "受信トレイでの見え方（件名と冒頭）"} ],
         "stakes": ["external"], "blocking": true,
         "evidence": [
           { "label": "文面の下書き", "url": "https://example.com/drafts/newsletter-oct" },
@@ -380,6 +431,9 @@ a.ev:hover { text-decoration: underline; }
           { "key": "A", "label": "「保存」にそろえる", "consequence": "3つの画面で文言が変わる。" },
           { "key": "B", "label": "今のままにする", "consequence": "混在は残る。" } ],
         "recommend": { "key": "A", "reason": "ほかの画面はすでに「保存」でそろっている。" },
+        "images": [
+          {"asset_id": "0000000000000000000000000000de11", "caption": "A: すべて「保存」にそろえた設定画面"},
+          {"asset_id": "0000000000000000000000000000de12", "caption": "B: 今の設定画面（保存・更新・適用が混在）"} ],
         "stakes": [], "blocking": false,
         "asked_at": "2026-10-14T02:00:00+09:00" },
       { "v": 1, "id": "design-agent-20261012-empty-state", "rev": 1, "status": "open",
@@ -479,6 +533,8 @@ a.ev:hover { text-decoration: underline; }
           { "key": "B", "label": "Fix the subject, then send", "consequence": "Delivery slips about an hour." },
           { "key": "C", "label": "Skip this month", "consequence": "The feature announcement moves to next month." } ],
         "recommend": { "key": "B", "reason": "“Totally free” in a subject line often trips spam filters." },
+        "images": [
+          {"asset_id": "0000000000000000000000000000de23", "caption": "How it looks in an inbox (subject and first line)"} ],
         "stakes": ["external"], "blocking": true,
         "evidence": [
           { "label": "Draft", "url": "https://example.com/drafts/newsletter-oct" },
@@ -518,6 +574,9 @@ a.ev:hover { text-decoration: underline; }
           { "key": "A", "label": "Use “Save” everywhere", "consequence": "Wording changes on 3 screens." },
           { "key": "B", "label": "Leave as is", "consequence": "The mix stays." } ],
         "recommend": { "key": "A", "reason": "Every other screen already says “Save”." },
+        "images": [
+          {"asset_id": "0000000000000000000000000000de21", "caption": "A: settings with “Save” everywhere"},
+          {"asset_id": "0000000000000000000000000000de22", "caption": "B: settings today (Save, Update and Apply mixed)"} ],
         "stakes": [], "blocking": false,
         "asked_at": "2026-10-14T02:00:00+09:00" },
       { "v": 1, "id": "design-agent-20261012-empty-state", "rev": 1, "status": "open",
@@ -705,6 +764,15 @@ a.ev:hover { text-decoration: underline; }
       dueIn: "期限まで{d}",
       duePast: "期限を{d}過ぎた",
       evidence: "根拠",
+      images: "画像",
+      imageN: "画像{n}",
+      openImage: "大きく表示: {caption}",
+      imageMissing: "画像を読み込めませんでした。",
+      imageNotUploaded: "この画像は表示できません。受付箱にアップロードされていません。",
+      viewerPrev: "前へ",
+      viewerNext: "次へ",
+      viewerActual: "原寸で見る",
+      viewerCount: "{i} / {n}",
       newTab: "（新しいタブで開きます）",
       othersNote: "{owner}の判断待ちです。代わりに答えることもできます。",
       escalated: "{name} は自分で決めるつもりでしたが、{stakes}の印があるので人の判断が要ります。返事がない限り進めません。",
@@ -825,6 +893,15 @@ a.ev:hover { text-decoration: underline; }
       dueIn: "due in {d}",
       duePast: "{d} overdue",
       evidence: "Evidence",
+      images: "Images",
+      imageN: "Image {n}",
+      openImage: "View larger: {caption}",
+      imageMissing: "The image did not load.",
+      imageNotUploaded: "Can’t show this image. It was not uploaded to this inbox.",
+      viewerPrev: "Previous",
+      viewerNext: "Next",
+      viewerActual: "Actual size",
+      viewerCount: "{i} / {n}",
       newTab: " (opens in a new tab)",
       othersNote: "Waiting on {owner}. You can answer for them.",
       escalated: "{name} meant to decide this itself, but it is marked {stakes}, so a person has to decide. Nothing happens without an answer.",
@@ -864,6 +941,16 @@ a.ev:hover { text-decoration: underline; }
   const str = (v) => (typeof v === "string" ? v.trim() : "");
   const ms = (v) => { const n = typeof v === "string" ? Date.parse(v) : NaN; return Number.isFinite(n) ? n : null; };
   const isWebLink = (u) => /^https?:\/\/[^\s]+$/i.test(u);
+  const ASSET_ID = /^[0-9a-f]{32}$/i;
+  // The id of a file uploaded to this artifact: the id itself, or a pasted path or URL ending in _blob/<id>.
+  function assetId(im) {
+    for (const v of [str(im.asset_id), str(im.asset_url)]) {
+      if (ASSET_ID.test(v)) return v.toLowerCase();
+      const m = /(?:^|\/)_blob\/([0-9a-f]{32})(?:[?#]|$)/i.exec(v);
+      if (m) return m[1].toLowerCase();
+    }
+    return null;
+  }
 
   let lang = "ja";
   let dict = STRINGS.ja;
@@ -950,6 +1037,8 @@ a.ev:hover { text-decoration: underline; }
     tiers: "",
   };
   const src = () => (S.view === "demo" ? data.demo : data.live) || { items: new Map(), answers: new Map(), config: null, loaded: false };
+  // Live: the artifact serves each uploaded file at /_blob/<id>. Demo: made-up ids map to pictures in the demo data.
+  const assetSrc = (id) => (S.view === "demo" ? (data.demo && data.demo.assets.get(id)) || "" : "/_blob/" + id);
 
   /* ===== 5. Sources. Each holds items, answers, config and a store with writeAnswer(id, answer). ===== */
   // The page only ever writes answers/<id>. It never edits items and never deletes answers.
@@ -977,6 +1066,8 @@ a.ev:hover { text-decoration: underline; }
       items: readItems(items),
       answers: readAnswers((raw.answers || []).map(moveAnswer)),
       config: (raw.config && (raw.config[lang] || raw.config.en)) || null,
+      assets: new Map(Object.entries(raw.assets && typeof raw.assets === "object" ? raw.assets : {})
+        .filter(([k, v]) => ASSET_ID.test(k) && typeof v === "string" && v.startsWith("data:image/"))),
       configSeen: true,
       loaded: true,
     };
@@ -1016,6 +1107,9 @@ a.ev:hover { text-decoration: underline; }
     it.blocking = raw.blocking !== false;
     it.evidence = (Array.isArray(raw.evidence) ? raw.evidence : []).filter((l) => l && str(l.label)).slice(0, 5)
       .map((l) => ({ label: str(l.label), url: str(l.url) }));
+    // An entry without a usable id is kept, so a wrong link shows as "can't show" instead of vanishing.
+    it.images = (Array.isArray(raw.images) ? raw.images : []).filter((im) => im && typeof im === "object").slice(0, 6)
+      .map((im) => ({ id: assetId(im), caption: str(im.caption) }));
     it.askedMs = ms(raw.asked_at);
     it.dueMs = ms(raw.due);
     it.doneMs = ms(raw.done_at);
@@ -1146,6 +1240,7 @@ a.ev:hover { text-decoration: underline; }
       ...it.otherStakes.map((s) => h("span", { class: "stake" }, icon("other"), t("stake_other", { v: s }))),
     ];
   }
+  const teamTag = (it) => (it.project ? h("span", { class: "team", title: it.project, text: it.project }) : null);
   function stakeNames(it) {
     return [...it.stakes.map((s) => t("stake_" + s)), ...it.otherStakes.map((s) => t("stake_other", { v: s }))];
   }
@@ -1160,10 +1255,12 @@ a.ev:hover { text-decoration: underline; }
     const it = v.it;
     const reopened = S.reopen.has(it.id) && v.ans;
     const el = h("article", { class: "card" + (v.urgent && !inRow && !reopened ? " is-urgent" : ""), id: "card-" + it.id, "aria-labelledby": "t-" + it.id });
-    el.append(h("div", { class: "card-top" }, pill(v), stakeChips(it)));
+    el.append(h("div", { class: "card-top" }, teamTag(it), pill(v), stakeChips(it)));
     el.append(h("h3", { class: "card-title", id: "t-" + it.id, tabindex: "-1", text: it.title }));
     if (it.blocked) el.append(h("p", { class: "blocked" }, h("span", { class: "blocked-k", text: t(it.blocking ? "blockedLabel" : "waitingLabel") }), " ", it.blocked));
     if (it.why) el.append(h("p", { class: "why", text: it.why }));
+    const shots = imagesBlock(it, inRow);
+    if (shots) el.append(shots);
     if (reopened) el.append(h("p", { class: "notice is-subtle", text: t("current", { what: answerWhat(v.ans, it) }) }));
     else if (v.prev) el.append(h("p", { class: "notice", text: t("changed", { what: answerWhat(v.prev, it) }) }));
     if (inRow) el.append(h("p", { class: "notice is-subtle", text: t("othersNote", { owner: ownerLabel(effOwner(it)) }) }));
@@ -1300,13 +1397,109 @@ a.ev:hover { text-decoration: underline; }
   function meta(it, v) {
     const parts = [];
     if (it.asker) parts.push(h("span", { class: "asker", text: t("asker", { name: it.asker }) }));
-    if (it.project) parts.push(h("span", { text: it.project }));
     if (it.dueMs != null) parts.push(h("span", { class: "due" + (v.overdue ? " is-over" : "") }, rel("due", it.dueMs), t("paren", { v: at(it.dueMs) })));
     const evs = it.evidence.length ? h("div", { class: "evs" }, h("span", { class: "evs-k", text: t("evidence") }),
       it.evidence.map((l) => isWebLink(l.url)
         ? h("a", { class: "ev", href: l.url, target: "_blank", rel: "noopener noreferrer" }, l.label, icon("link"), h("span", { class: "sr", text: t("newTab") }))
         : h("span", { class: "ev", text: l.label }))) : null;
     return h("div", { class: "meta" }, parts.length ? h("p", { class: "meta-line" }, parts) : null, evs);
+  }
+
+  // Pictures the agent attached, on the card itself so nobody has to open a link to judge.
+  // Cached on their own, so opening a panel or a confirmation rebuilds the card without reloading them.
+  function imagesBlock(it, inRow) {
+    if (!it.images.length) return null;
+    return cached((inRow ? "rowshots:" : "shots:") + it.id, JSON.stringify([it.images, ctx]), () => buildImages(it));
+  }
+  function buildImages(it) {
+    const box = h("div", { class: "shots" + (it.images.length % 2 ? " is-odd" : ""), role: "group", "aria-label": t("images") });
+    it.images.forEach((im, i) => {
+      const cap = im.caption || t("imageN", { n: i + 1 });
+      const url = im.id ? assetSrc(im.id) : "";
+      let media;
+      if (url) {
+        const img = h("img", { src: url, alt: "", loading: "lazy", decoding: "async" });
+        media = h("button", { type: "button", class: "shot-btn", id: "img-" + it.id + "-" + i, "aria-label": t("openImage", { caption: cap }),
+          onclick: () => openViewer(it, i) }, img);
+        img.addEventListener("error", () => media.replaceWith(h("div", { class: "shot-miss", text: t("imageMissing") })), { once: true });
+      } else {
+        media = h("div", { class: "shot-miss", text: t(im.id ? "imageMissing" : "imageNotUploaded") });
+      }
+      box.append(h("figure", { class: "shot" }, media, h("figcaption", { text: cap })));
+    });
+    return box;
+  }
+
+  // One full-screen viewer for every card. While it is open the page behind it is inert.
+  const viewer = { list: [], at: 0, itemId: "" };
+  const behindViewer = () => [document.querySelector(".bar"), $("app"), $("toast")];
+  function openViewer(it, i) {
+    viewer.list = it.images.map((im, n) => ({ ...im, n, url: im.id ? assetSrc(im.id) : "" })).filter((im) => im.url);
+    if (!viewer.list.length) return;
+    viewer.at = Math.max(0, viewer.list.findIndex((im) => im.n === i));
+    viewer.itemId = it.id;
+    $("viewer-close").textContent = t("close");
+    $("viewer-prev").textContent = t("viewerPrev");
+    $("viewer-next").textContent = t("viewerNext");
+    $("viewer-zoom").textContent = t("viewerActual");
+    showViewer();
+    $("viewer").hidden = false;
+    document.documentElement.classList.add("is-viewing");
+    for (const el of behindViewer()) el.inert = true;
+    $("viewer-close").focus();
+  }
+  function showViewer() {
+    const im = viewer.list[viewer.at];
+    const count = viewer.list.length;
+    const cap = im.caption || t("imageN", { n: im.n + 1 });
+    $("viewer-cap").textContent = cap;
+    $("viewer-n").textContent = count > 1 ? t("viewerCount", { i: viewer.at + 1, n: count }) : "";
+    $("viewer-prev").hidden = $("viewer-next").hidden = count < 2;
+    setZoom(false);
+    $("viewer-miss").hidden = true;
+    const img = $("viewer-img");
+    img.hidden = false;
+    img.alt = cap;
+    img.src = im.url;
+  }
+  function setZoom(on) {
+    $("viewer-stage").classList.toggle("is-actual", on);
+    $("viewer-zoom").setAttribute("aria-pressed", String(on));
+  }
+  function stepViewer(by) {
+    const count = viewer.list.length;
+    if (count < 2) return;
+    viewer.at = (viewer.at + by + count) % count;
+    showViewer();
+  }
+  function closeViewer() {
+    if ($("viewer").hidden) return;
+    $("viewer").hidden = true;
+    document.documentElement.classList.remove("is-viewing");
+    for (const el of behindViewer()) el.inert = false;
+    $("viewer-img").removeAttribute("src");
+    const im = viewer.list[viewer.at];
+    focus("img-" + viewer.itemId + "-" + (im ? im.n : 0));
+  }
+  function initViewer() {
+    $("viewer-close").addEventListener("click", closeViewer);
+    $("viewer-prev").addEventListener("click", () => stepViewer(-1));
+    $("viewer-next").addEventListener("click", () => stepViewer(1));
+    $("viewer-zoom").addEventListener("click", () => setZoom(!$("viewer-stage").classList.contains("is-actual")));
+    $("viewer-img").addEventListener("error", () => {
+      const img = $("viewer-img");
+      if (!img.getAttribute("src")) return;
+      img.hidden = true;
+      $("viewer-miss").textContent = t("imageMissing");
+      $("viewer-miss").hidden = false;
+    });
+    document.addEventListener("keydown", (e) => {
+      if ($("viewer").hidden) return;
+      const zoomed = $("viewer-stage").classList.contains("is-actual");
+      if (e.key === "Escape") { e.preventDefault(); closeViewer(); }
+      else if (!zoomed && e.key === "ArrowRight") stepViewer(1);
+      else if (!zoomed && e.key === "ArrowLeft") stepViewer(-1);
+    });
   }
 
   // Other owners' open items: a compact row that opens into the full card.
@@ -1319,7 +1512,7 @@ a.ev:hover { text-decoration: underline; }
       det.addEventListener("toggle", () => { if (det.open) S.open.add(id); else S.open.delete(id); render(); });
       det.append(h("summary", null,
         h("span", { class: "row-main" },
-          h("span", { class: "row-top" }, pill(v), stakeChips(it)),
+          h("span", { class: "row-top" }, teamTag(it), pill(v), stakeChips(it)),
           h("span", { class: "row-t", text: it.title }),
           it.selfOwned && it.recommend ? h("span", { class: "row-auto", text: autoLine(it).textContent }) : null),
         h("span", { class: "chev" }, icon("chev"))));
@@ -1340,6 +1533,7 @@ a.ev:hover { text-decoration: underline; }
     const sig = JSON.stringify(["snd", it.sig, p.until, writing, ctx]);
     return cached("snd:" + it.id, sig, () => h("div", { class: "receipt is-sending", id: "rc-" + it.id },
       h("div", { class: "rc-main" },
+        teamTag(it),
         h("span", { class: "rc-t", text: it.title }),
         h("span", { class: "rc-a", id: "rca-" + it.id }, icon("send"), answerLine(p.answer, it, "sending")),
         h("span", { class: "rc-s", "data-until": writing ? null : p.until, text: writing ? t("sendingNow") : t("sendIn", { n: secondsLeft(p.until) }) })),
@@ -1382,6 +1576,7 @@ a.ev:hover { text-decoration: underline; }
       }
       const el = h("div", { class: "receipt", id: "rc-" + id },
         h("div", { class: "rc-main" },
+          teamTag(it),
           h("span", { class: "rc-t", text: it.title }),
           base ? h("span", { class: "rc-a" }, icon("check"), answerLine(base, it, "sent")) : null,
           base && base.note ? h("span", { class: "rc-n", text: base.note }) : null,
@@ -1716,6 +1911,7 @@ a.ev:hover { text-decoration: underline; }
   async function boot(saved) {
     if (saved && Array.isArray(saved.drafts)) S.drafts = new Map(saved.drafts);
     if (saved && Array.isArray(saved.open)) S.open = new Set(saved.open);
+    initViewer();
     setLocale(SETTINGS.locale);
     render();
     const host = window.claude;

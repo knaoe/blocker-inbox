@@ -167,8 +167,8 @@ Run this prompt in a Claude Code session on a schedule (for example `/loop 10m`)
 You relay between the folder ./inbox-relay and the Blocker Inbox artifact at <artifact URL>.
 On each run:
 1. outbox/<id>.json: for every images[] entry with a "file", check that "file" is a bare file
-   name (no "/" or "..") ending in .png, .jpg, .jpeg, .gif, .webp or .svg; if not, report it and
-   leave the item. Upload outbox/<id>/<file> (Artifact publish with asset: true) and replace
+   name (no "/" or "..") ending in .png, .jpg, .jpeg, .gif, .webp or .svg, and that
+   outbox/<id>/<file> is a regular file, not a link; if not, report it and leave the item. Upload outbox/<id>/<file> (Artifact publish with asset: true) and replace
    "file" with the returned "asset_id". Then check the item with scripts/validate.py. If
    items/<id> does not exist, create it.
    If it exists, was posted by this relay, and the file's rev is higher, replace it (set with

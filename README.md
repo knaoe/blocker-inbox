@@ -41,9 +41,9 @@ The JSON Schemas are in [`schema/`](schema). Check a document with `uv run scrip
 - `id`: equal to the document id. Letters, digits and `_ . ~ : @ + -`. Use `<asker>-<yyyymmdd>-<slug>`. A new question gets a new id.
 - `rev`: starts at `1`. Add 1 whenever you change anything a person reads (title, why, options, recommendation, stakes, owner, due, evidence), and remove `received` in the same write. Taking an answer, closing and `meta` do not change it. An answer only counts for the `rev` it was given for, so nobody's answer lands on a question you have since rewritten.
 - `status`: `open` until you have finished, then `done`.
-- `title`: the decision, phrased as a question.
+- `title`: the decision, phrased as a question. Say what the subject is in words, not only its number: "Move the search filter fix (web#88) to 2.4?" rather than "Move web#88 to 2.4?".
 - `blocked`: what is stopped, as a short noun phrase. Optional.
-- `why`: why it matters, in one line. Put the facts a person needs here (the email subject, the amount), not only behind a link.
+- `why`: why it matters, in one line. Put the facts a person needs here (the email subject, the amount), not only behind a link. It is shown as plain text: Markdown links appear as raw brackets, so put every URL in `evidence` instead.
 - `owner`: who should decide, as an owner key from `config/inbox` (for example `lead`, `ux`, `repo`). Set it to your own `asker` name when you will decide yourself unless someone answers first; the card then says that, if nobody answers, you go ahead with the recommendation at `due`. Do this only when nothing is at stake: it needs `recommend` and `due` and no `stakes`. The page sends a marked item set this way to the inbox owner instead, and the validator rejects it.
 - `asker`: your agent name.
 - `options`: 2 to 4 of `{ key, label, consequence }`. `consequence` says in plain words what happens if this option is picked.

@@ -135,6 +135,9 @@ button, input, textarea, select { font-family: inherit; }
 .pill .ic { width: 13px; height: 13px; }
 .stake { display: inline-flex; align-items: center; gap: 4px; padding: 5px 8px 5px 6px; border-radius: 6px; background: var(--stake-bg); color: var(--stake-fg); font-size: var(--fs-xs); font-weight: 700; line-height: 1.2; white-space: nowrap; }
 .stake .ic { width: 13px; height: 13px; }
+/* Team label: which team's issue this is, first thing on every card, row and receipt. */
+.team { display: inline-flex; align-items: center; max-width: 100%; padding: 4px 9px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); font-size: var(--fs-xs); font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rc-main > .team { justify-self: start; margin-bottom: 2px; }
 
 /* Options */
 .opts { display: grid; gap: 8px; }
@@ -1146,6 +1149,7 @@ a.ev:hover { text-decoration: underline; }
       ...it.otherStakes.map((s) => h("span", { class: "stake" }, icon("other"), t("stake_other", { v: s }))),
     ];
   }
+  const teamTag = (it) => (it.project ? h("span", { class: "team", title: it.project, text: it.project }) : null);
   function stakeNames(it) {
     return [...it.stakes.map((s) => t("stake_" + s)), ...it.otherStakes.map((s) => t("stake_other", { v: s }))];
   }
@@ -1160,7 +1164,7 @@ a.ev:hover { text-decoration: underline; }
     const it = v.it;
     const reopened = S.reopen.has(it.id) && v.ans;
     const el = h("article", { class: "card" + (v.urgent && !inRow && !reopened ? " is-urgent" : ""), id: "card-" + it.id, "aria-labelledby": "t-" + it.id });
-    el.append(h("div", { class: "card-top" }, pill(v), stakeChips(it)));
+    el.append(h("div", { class: "card-top" }, teamTag(it), pill(v), stakeChips(it)));
     el.append(h("h3", { class: "card-title", id: "t-" + it.id, tabindex: "-1", text: it.title }));
     if (it.blocked) el.append(h("p", { class: "blocked" }, h("span", { class: "blocked-k", text: t(it.blocking ? "blockedLabel" : "waitingLabel") }), " ", it.blocked));
     if (it.why) el.append(h("p", { class: "why", text: it.why }));
@@ -1300,7 +1304,6 @@ a.ev:hover { text-decoration: underline; }
   function meta(it, v) {
     const parts = [];
     if (it.asker) parts.push(h("span", { class: "asker", text: t("asker", { name: it.asker }) }));
-    if (it.project) parts.push(h("span", { text: it.project }));
     if (it.dueMs != null) parts.push(h("span", { class: "due" + (v.overdue ? " is-over" : "") }, rel("due", it.dueMs), t("paren", { v: at(it.dueMs) })));
     const evs = it.evidence.length ? h("div", { class: "evs" }, h("span", { class: "evs-k", text: t("evidence") }),
       it.evidence.map((l) => isWebLink(l.url)
@@ -1319,7 +1322,7 @@ a.ev:hover { text-decoration: underline; }
       det.addEventListener("toggle", () => { if (det.open) S.open.add(id); else S.open.delete(id); render(); });
       det.append(h("summary", null,
         h("span", { class: "row-main" },
-          h("span", { class: "row-top" }, pill(v), stakeChips(it)),
+          h("span", { class: "row-top" }, teamTag(it), pill(v), stakeChips(it)),
           h("span", { class: "row-t", text: it.title }),
           it.selfOwned && it.recommend ? h("span", { class: "row-auto", text: autoLine(it).textContent }) : null),
         h("span", { class: "chev" }, icon("chev"))));
@@ -1340,6 +1343,7 @@ a.ev:hover { text-decoration: underline; }
     const sig = JSON.stringify(["snd", it.sig, p.until, writing, ctx]);
     return cached("snd:" + it.id, sig, () => h("div", { class: "receipt is-sending", id: "rc-" + it.id },
       h("div", { class: "rc-main" },
+        teamTag(it),
         h("span", { class: "rc-t", text: it.title }),
         h("span", { class: "rc-a", id: "rca-" + it.id }, icon("send"), answerLine(p.answer, it, "sending")),
         h("span", { class: "rc-s", "data-until": writing ? null : p.until, text: writing ? t("sendingNow") : t("sendIn", { n: secondsLeft(p.until) }) })),
@@ -1382,6 +1386,7 @@ a.ev:hover { text-decoration: underline; }
       }
       const el = h("div", { class: "receipt", id: "rc-" + id },
         h("div", { class: "rc-main" },
+          teamTag(it),
           h("span", { class: "rc-t", text: it.title }),
           base ? h("span", { class: "rc-a" }, icon("check"), answerLine(base, it, "sent")) : null,
           base && base.note ? h("span", { class: "rc-n", text: base.note }) : null,

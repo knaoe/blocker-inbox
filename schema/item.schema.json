@@ -29,7 +29,7 @@
     "rev": {
       "type": "integer",
       "minimum": 1,
-      "description": "Start at 1. Add 1 whenever you change anything a person reads (title, blocked, why, options, recommend, stakes, owner, due, evidence), and remove received in the same write. Taking an answer (received), closing (status, outcome, done_at) and meta do not change rev. An answer only applies to the rev it was given for."
+      "description": "Start at 1. Add 1 whenever you change anything a person reads (title, blocked, why, options, recommend, stakes, owner, due, evidence, images), and remove received in the same write. Taking an answer (received), closing (status, outcome, done_at) and meta do not change rev. An answer only applies to the rev it was given for."
     },
     "status": {
       "enum": [
@@ -122,6 +122,14 @@
         "$ref": "#/$defs/link"
       },
       "description": "Links that back up the question (pull request, report, draft)."
+    },
+    "images": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "$ref": "#/$defs/image"
+      },
+      "description": "Pictures a person should see before deciding (screenshots, mockups, proofs). Shown on the card as thumbnails that open full size. Upload each file to this artifact's asset store first and put the id it returns here; a link to anywhere else does not display."
     },
     "asked_at": {
       "type": "string",
@@ -234,6 +242,27 @@
           "minLength": 1,
           "maxLength": 120,
           "description": "What happens if this is picked, in plain words."
+        }
+      }
+    },
+    "image": {
+      "type": "object",
+      "required": [
+        "asset_id",
+        "caption"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$",
+          "description": "The id the asset upload returned (32 hex characters). The page shows the file from /_blob/<asset_id>. Store the id, not the upload's url."
+        },
+        "caption": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "What the picture shows, in plain words (\"A: white frame\"). Shown under the thumbnail and read out by screen readers."
         }
       }
     },
